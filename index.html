@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="description" content="Ye's Portfolio - UC Berkeley Student, Machine Learning Researcher, and Photographer.">
+    <meta name="keywords" content="Ye, UC Berkeley, Machine Learning, Photography, Yorushika, Portfolio">
+    <meta name="author" content="Ye">
+    
+    <meta property="og:title" content="Ye | UC Berkeley">
+    <meta property="og:description" content="Looking up at the sky, listening to the wind.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1501630834273-4b5604d2ee31?q=80&w=1200">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☁️</text></svg>">
+
+    <title>Ye | UC Berkeley</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. 全局变量与重置 --- */
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --bg-dark: #0b0d17;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #a0a0b0;
+            --nav-height: 80px;
+        }
+
+        /* Light 模式下覆盖部分变量 */
+        body.light {
+            --bg-dark: #f5f5f7;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(148, 163, 184, 0.5);
+            --text-main: #111827;
+            --text-muted: #4b5563;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.7;
+            overflow-x: hidden; /* 防止水平滚动条 */
+        }
+
+        h1, h2, h3, .nav-logo {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* --- 2. 导航栏 (升级版) --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: var(--nav-height);
+            padding: 0 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(11, 13, 23, 0.6); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        /* 向下滚动时隐藏导航栏的动画类（可选 JS 实现） */
+        nav.hidden { transform: translateY(-100%); }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: white;
+            z-index: 1001;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.8);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--primary-color);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* 主题切换按钮 */
+        .theme-toggle {
+            border: 1px solid var(--glass-border);
+            background: rgba(15, 23, 42, 0.6);
+            color: #fff;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        body.light .theme-toggle {
+            background: rgba(255, 255, 255, 0.8);
+            color: #111827;
+        }
+
+        .theme-toggle span {
+            font-size: 1.1rem;
+        }
+
+        /* --- 手机端汉堡菜单按钮 --- */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 6px;
+            z-index: 1001;
+            background: none;
+            border: none;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+
+        /* 菜单打开时的动画状态 */
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+        /* --- 3. Hero Section (修复版) --- */
+        .hero {
+            /* 使用 100dvh 解决手机浏览器地址栏遮挡问题 */
+            height: 100vh;
+            height: 100dvh; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            
+            /* 稳定的 Unsplash 积雨云链接 */
+            background-image: url('https://images.unsplash.com/photo-1501630834273-4b5604d2ee31?q=80&w=2000&auto=format&fit=crop');
+            
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* 视差滚动 */
+        }
+
+        /* 移动端禁用 fixed 背景，防止性能问题和显示bug */
+        @media (hover: none) {
+            .hero { background-attachment: scroll; }
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(15, 32, 39, 0.2) 0%,
+                rgba(15, 32, 39, 0.1) 60%,
+                var(--bg-dark) 100%
+            );
+            z-index: 1;
+        }
+
+        .hero-content {
+            z-index: 2;
+            padding: 2rem;
+            animation: fadeInUp 1.2s ease-out;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5rem); /* 响应式字体大小 */
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            color: #ffffff;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.6); 
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 500;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.6);
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            z-index: 2;
+            opacity: 0.8;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        /* --- 4. 通用板块 --- */
+        section {
+            padding: 6rem 8%;
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            margin-bottom: 1rem;
+            display: inline-block;
+            position: relative;
+        }
+
+        .section-subtitle {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* --- About --- */
+        #about { background: var(--bg-dark); }
+
+        .about-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: clamp(2rem, 5vw, 3rem);
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- Research --- */
+        #research { background-color: #121420; }
+
+        body.light #research {
+            background-color: #e5e7eb;
+        }
+
+        .research-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .research-card {
+            background: rgba(255,255,255,0.03);
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        body.light .research-card {
+            background: rgba(255,255,255,0.9);
+        }
+
+        .research-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        body.light .research-card:hover {
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(148,163,184,0.4);
+        }
+
+        .research-card h3 { font-size: 1.4rem; margin-bottom: 1rem; color: white; }
+
+        body.light .research-card h3 { color: #111827; }
+        
+        .research-card p { flex-grow: 1; /* 让描述撑满高度，对齐底部标签 */ }
+
+        .tags {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            background: rgba(102, 126, 234, 0.15);
+            color: #8ba1ff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        /* --- Photography --- */
+        #photography { background-color: var(--bg-dark); }
+
+        body.light #photography {
+            background-color: #f5f5f7;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .photo-item {
+            position: relative;
+            aspect-ratio: 4/3; 
+            overflow: hidden;
+            border-radius: 12px;
+            cursor: pointer;
+            background-color: #1a1d2d; /* 骨架屏背景色 */
+        }
+
+        body.light .photo-item {
+            background-color: #e5e7eb;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: block;
+        }
+
+        .photo-item:hover img { transform: scale(1.1); }
+
+        .photo-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            opacity: 0; transition: opacity 0.3s;
+            color: #f9fafb;
+            font-size: 0.9rem;
+        }
+
+        .photo-item:hover .photo-overlay { opacity: 1; }
+
+        /* --- Lightbox 图片查看 --- */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+
+        .lightbox-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox-inner {
+            position: relative;
+            max-width: min(90vw, 960px);
+            max-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-inner img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            object-fit: contain;
+        }
+
+        .lightbox-close,
+        .lightbox-prev,
+        .lightbox-next {
+            position: absolute;
+            border: none;
+            background: rgba(15, 23, 42, 0.7);
+            color: #f9fafb;
+            cursor: pointer;
+            border-radius: 999px;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        .lightbox-close {
+            top: -50px;
+            right: 0;
+        }
+
+        .lightbox-prev {
+            left: -50px;
+        }
+
+        .lightbox-next {
+            right: -50px;
+        }
+
+        @media (max-width: 768px) {
+            .lightbox-prev {
+                left: 10px;
+            }
+            .lightbox-next {
+                right: 10px;
+            }
+            .lightbox-close {
+                top: -45px;
+                right: 10px;
+            }
+        }
+
+        .lightbox-close:hover,
+        .lightbox-prev:hover,
+        .lightbox-next:hover {
+            background: rgba(55, 65, 81, 0.9);
+        }
+
+        /* --- 滚动淡入动画 --- */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 4rem 8%;
+            background-color: #05060a;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+        }
+
+        body.light footer {
+            background-color: #e5e7eb;
+        }
+
+        .footer-btn {
+            display: inline-block; margin-top: 1.5rem; padding: 12px 30px;
+            background: transparent; border: 1px solid var(--primary-color);
+            color: var(--primary-color); border-radius: 50px; font-weight: 600;
+        }
+
+        .footer-btn:hover {
+            background: var(--primary-color); color: white;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* --- 5. 媒体查询 (手机适配核心逻辑) --- */
+        @media (max-width: 768px) {
+            section { padding: 4rem 5%; }
+            
+            /* 显示汉堡按钮 */
+            .hamburger { display: flex; }
+
+            /* 移动端全屏菜单样式 */
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%; /* 默认隐藏在右侧 */
+                width: 100%;
+                height: 100vh;
+                background: rgba(11, 13, 23, 0.95);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 2.5rem;
+                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 1000;
+            }
+
+            /* 激活时的类名 */
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                font-size: 1.5rem;
+                font-weight: 600;
+            }
+
+            .theme-toggle {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="navbar">
+        <div class="nav-left">
+            <div class="nav-logo">Ye.</div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <span>🌙</span><span id="themeLabel">Dark</span>
+            </button>
+        </div>
+        
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="nav-links" id="navLinks">
+            <a href="#home" onclick="closeMenu()">Home</a>
+            <a href="#about" onclick="closeMenu()">About</a>
+            <a href="#research" onclick="closeMenu()">Research</a>
+            <a href="#photography" onclick="closeMenu()">Photography</a>
+        </div>
+    </nav>
+
+    <div id="home" class="hero">
+        <div class="hero-content">
+            <h1>Hello, I'm Ye</h1>
+            <p>Looking up at the sky, listening to the wind.</p>
+            <p style="margin-top: 15px; opacity: 0.9; font-size: 1rem; letter-spacing: 1px;">UC Berkeley</p>
+        </div>
+        
+        <div class="scroll-down" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <path d="M7 13L12 18L17 13M7 6L12 11L17 6" />
+            </svg>
+        </div>
+    </div>
+
+    <section id="about">
+        <div class="section-header">
+            <span class="section-subtitle">Introduction</span>
+            <h2 class="section-title">About Me</h2>
+        </div>
+        
+        <div class="about-card">
+            <p style="font-size: 1.1rem; margin-bottom: 1.5rem; color: #e0e0e0;">
+                我是 <b>Ye</b>，<b>UC Berkeley</b> 在读。
+            </p>
+            
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                我是一个把生活过成 BGM 的人，耳机里永远循环着 <b>Yorushika (ヨルシカ)</b>。那种透明的夏日感与稍纵即逝的诗意，是我灵感的底色。
+            </p>
+
+            <p style="color: var(--text-muted);">
+                在代码构建的逻辑世界之外，我正在撰写一部属于自己的<b>短篇小说</b>。试图用文字捕捉那些像云一样流动的瞬间，记录音乐与故事交织的夏天。
+            </p>
+        </div>
+    </section>
+
+    <section id="research">
+        <div class="section-header">
+            <span class="section-subtitle">Academic</span>
+            <h2 class="section-title">Selected Research</h2>
+        </div>
+
+        <div class="research-grid">
+            <div class="research-card">
+                <h3>Machine Learning in Astrophysics</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    研究利用深度学习处理射电望远镜数据，识别微弱的脉冲星信号。这是一段关于去噪与模式识别的探索。
+                </p>
+                <div class="tags">
+                    <span class="tag">Python</span>
+                    <span class="tag">PyTorch</span>
+                    <span class="tag">Data Science</span>
+                </div>
+            </div>
+
+            <div class="research-card">
+                <h3>Computer Vision Project</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    基于伯克利 CS189 课程的拓展项目，构建了一个用于夜空星图自动识别的视觉模型。
+                </p>
+                <div class="tags">
+                    <span class="tag">OpenCV</span>
+                    <span class="tag">AI</span>
+                </div>
+            </div>
+
+            <div class="research-card">
+                <h3>Full Stack Web Dev</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    你正在看到的这个网站就是我的实践之一。探索现代前端技术与交互设计的平衡。
+                </p>
+                <div class="tags">
+                    <span class="tag">HTML/CSS</span>
+                    <span class="tag">Web Design</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="photography">
+        <div class="section-header">
+            <span class="section-subtitle">Gallery</span>
+            <h2 class="section-title">Photography</h2>
+        </div>
+
+        <div class="gallery-grid">
+            <div class="photo-item">
+                <img src="images/1.jpg" alt="Moment 1" loading="lazy">
+                <div class="photo-overlay"><span>Moment 01</span></div>
+            </div>
+
+            <div class="photo-item">
+                <img src="images/2.jpg" alt="Moment 2" loading="lazy">
+                <div class="photo-overlay"><span>Moment 02</span></div>
+            </div>
+
+            <div class="photo-item">
+                <img src="images/3.jpg" alt="Moment 3" loading="lazy">
+                <div class="photo-overlay"><span>Moment 03</span></div>
+            </div>
+
+            <div class="photo-item">
+                <img src="images/4.jpg" alt="Moment 4" loading="lazy">
+                <div class="photo-overlay"><span>Moment 04</span></div>
+            </div>
+
+            <div class="photo-item">
+                <img src="images/5.png" alt="Moment 5" loading="lazy">
+                <div class="photo-overlay"><span>Moment 05</span></div>
+            </div>
+
+            <div class="photo-item">
+                <img src="images/6.jpg" alt="Moment 6" loading="lazy">
+                <div class="photo-overlay"><span>Moment 06</span></div>
+            </div>
+
+            <div class="photo-item">
+                <img src="images/7.jpg" alt="Moment 7" loading="lazy">
+                <div class="photo-overlay"><span>Moment 07</span></div>
+            </div>
+
+            <div class="photo-item">
+                <img src="images/8.jpg" alt="Moment 8" loading="lazy">
+                <div class="photo-overlay"><span>Moment 08</span></div>
+            </div>
+
+            <div class="photo-item">
+                <img src="images/9.jpg" alt="Moment 9" loading="lazy">
+                <div class="photo-overlay"><span>Moment 09</span></div>
+            </div>
+
+            <div class="photo-item">
+                <img src="images/10.jpg" alt="Moment 10" loading="lazy">
+                <div class="photo-overlay"><span>Moment 10</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox 图片查看层 -->
+    <div id="lightboxOverlay" class="lightbox-overlay">
+        <div class="lightbox-inner">
+            <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+            <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous">&#10094;</button>
+            <img id="lightboxImage" src="" alt="Expanded moment">
+            <button class="lightbox-next" id="lightboxNext" aria-label="Next">&#10095;</button>
+        </div>
+    </div>
+
+    <footer>
+        <h2 style="margin-bottom: 1rem;">Let's Connect</h2>
+        <p style="color: var(--text-muted);">Open for research collaborations and interesting conversations.</p>
+        
+        <a href="mailto:xiche_ye@berkeley.edu" class="footer-btn">
+            Send me an Email
+        </a>
+        
+        <div style="margin-top: 3rem; font-size: 0.8rem; opacity: 0.4;">
+            &copy; 2025 Ye. Built with code & curiosity.
+        </div>
+    </footer>
+
+    <script>
+        // 移动端菜单逻辑（保留原功能）
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : 'auto';
+        });
+
+        function closeMenu() {
+            navLinks.classList.remove('active');
+            hamburger.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!navLinks.contains(e.target) && !hamburger.contains(e.target) && navLinks.classList.contains('active')) {
+                closeMenu();
+            }
+        });
+
+        // 主题切换逻辑
+        const themeToggle = document.getElementById('themeToggle');
+        const themeLabel = document.getElementById('themeLabel');
+
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                document.body.classList.add('light');
+                themeLabel.textContent = 'Light';
+                themeToggle.querySelector('span').textContent = '☀️';
+            } else {
+                document.body.classList.remove('light');
+                themeLabel.textContent = 'Dark';
+                themeToggle.querySelector('span').textContent = '🌙';
+            }
+        }
+
+        // 初始化：优先本地存储，其次系统偏好
+        (function initTheme() {
+            const stored = localStorage.getItem('theme');
+            if (stored) {
+                applyTheme(stored);
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                applyTheme('light');
+            } else {
+                applyTheme('dark');
+            }
+        })();
+
+        themeToggle.addEventListener('click', () => {
+            const isLight = document.body.classList.contains('light');
+            const nextTheme = isLight ? 'dark' : 'light';
+            applyTheme(nextTheme);
+            localStorage.setItem('theme', nextTheme);
+        });
+
+        // 滚动淡入动画：为 about-card、research-card、photo-item 添加
+        const fadeTargets = document.querySelectorAll('.about-card, .research-card, .photo-item');
+        fadeTargets.forEach(el => el.classList.add('fade-in-section'));
+
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        fadeTargets.forEach(el => observer.observe(el));
+
+        // 图片 Lightbox 逻辑
+        const photoImgs = document.querySelectorAll('.photo-item img');
+        const lightbox = document.getElementById('lightboxOverlay');
+        const lightboxImg = document.getElementById('lightboxImage');
+        const lightboxClose = document.getElementById('lightboxClose');
+        const lightboxPrev = document.getElementById('lightboxPrev');
+        const lightboxNext = document.getElementById('lightboxNext');
+
+        let currentIndex = 0;
+
+        function openLightbox(index) {
+            currentIndex = index;
+            lightboxImg.src = photoImgs[currentIndex].src;
+            lightbox.classList.add('show');
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('show');
+        }
+
+        function showPrev() {
+            currentIndex = (currentIndex - 1 + photoImgs.length) % photoImgs.length;
+            lightboxImg.src = photoImgs[currentIndex].src;
+        }
+
+        function showNext() {
+            currentIndex = (currentIndex + 1) % photoImgs.length;
+            lightboxImg.src = photoImgs[currentIndex].src;
+        }
+
+        photoImgs.forEach((img, index) => {
+            img.addEventListener('click', () => openLightbox(index));
+        });
+
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightboxPrev.addEventListener('click', showPrev);
+        lightboxNext.addEventListener('click', showNext);
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('show')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') showPrev();
+            if (e.key === 'ArrowRight') showNext();
+        });
+    </script>
+
+</body>
+</html>
