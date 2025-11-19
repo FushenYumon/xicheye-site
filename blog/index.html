@@ -89,7 +89,7 @@
           </p>
           <h2 class="blog-title">{{ post.data.title }}</h2>
           <p class="blog-excerpt">
-            {{ post.templateContent | striptags | slice: 0, 80 }}&hellip;
+            {{ post.templateContent | strip_html | slice: 0, 80 }}&hellip;
           </p>
         </a>
       {% endfor %}
