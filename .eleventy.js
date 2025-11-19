@@ -1,6 +1,6 @@
 // .eleventy.js
 module.exports = function (eleventyConfig) {
-  // 自定义一个 "date" 过滤器，给 Nunjucks 用
+  // 自定义一个 "date" 过滤器, 给 Nunjucks 用
   eleventyConfig.addFilter("date", function (value, format = "yyyy-MM-dd") {
     const d = value instanceof Date ? value : new Date(value);
 
@@ -15,17 +15,17 @@ module.exports = function (eleventyConfig) {
     return d.toLocaleDateString("zh-CN");
   });
 
-  // 关键：让 Eleventy 直接把 admin 文件夹拷贝到 _site 里
+  // 让 Eleventy 直接把 admin 文件夹拷贝到 _site
   eleventyConfig.addPassthroughCopy("admin");
 
-  // 如果以后有静态图片之类，也可以这样：
-  // eleventyConfig.addPassthroughCopy("images");
+  // 关键：把 images 文件夹也原样拷贝到 _site/images
+  eleventyConfig.addPassthroughCopy("images");
 
   return {
     dir: {
-      input: ".",      // 源码在当前目录
+      input: ".",          // 源码在当前目录
       includes: "_includes",
-      output: "_site", // 输出目录
+      output: "_site",     // 输出目录
     },
   };
 };
