@@ -10,7 +10,8 @@ module.exports = function (eleventyConfig) {
       const day = String(d.getDate()).padStart(2, "0");
       return `${y}-${m}-${day}`;
     }
-
+// 确保 admin/config.yml 被原样拷到 _site/admin 下面
+  eleventyConfig.addPassthroughCopy("admin/config.yml");
     // 其他格式就先简单返回本地化日期
     return d.toLocaleDateString("zh-CN");
   });
