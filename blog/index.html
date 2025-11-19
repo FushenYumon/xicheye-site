@@ -85,7 +85,7 @@
       {% for post in collections.blog %}
         <a class="blog-card" href="{{ post.url }}">
           <p class="blog-meta">
-            {{ post.date.toLocaleDateString('zh-CN') }}
+            {{ post.date | date: "yyyy-MM-dd" }}
           </p>
           <h2 class="blog-title">{{ post.data.title }}</h2>
           <p class="blog-excerpt">
