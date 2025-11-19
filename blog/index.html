@@ -2,99 +2,100 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ye | Blog</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+  <title>Blog | Ye</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    :root {
-      --primary-color: #667eea;
-      --bg-dark: #0b0d17;
-      --text-main: #ffffff;
-      --text-muted: #a0a0b0;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: "Inter", sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-main);
-      line-height: 1.7;
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: #050816;
+      color: #f9fafb;
     }
-    main {
+    .page {
       max-width: 960px;
       margin: 0 auto;
-      padding: 3rem 8% 4rem;
+      padding: 32px 20px 64px;
     }
-    h1, h2 {
-      font-family: "Outfit", sans-serif;
+    .page-title {
+      font-size: 32px;
+      margin-bottom: 4px;
     }
-    a { color: inherit; text-decoration: none; }
-    .intro {
-      color: var(--text-muted);
-      font-size: 0.95rem;
+    .page-subtitle {
+      margin: 0 0 32px;
+      color: #9ca3af;
+      font-size: 14px;
     }
-    .post-list {
-      margin-top: 2rem;
+    .blog-list {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 16px;
     }
-    .post-card {
+    .blog-card {
+      display: block;
+      padding: 18px 20px;
       border-radius: 16px;
-      padding: 1.5rem 1.75rem;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.15s ease, box-shadow 0.15s ease,
+        border-color 0.15s ease, background 0.15s ease;
     }
-    .post-card:hover {
+    .blog-card:hover {
       transform: translateY(-2px);
-      transition: 0.2s ease;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.7);
+      border-color: #a5b4fc;
+      background: rgba(15, 23, 42, 0.98);
     }
-    .post-meta {
-      font-size: 0.8rem;
-      color: var(--text-muted);
+    .blog-meta {
+      font-size: 12px;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: .4rem;
+      color: #9ca3af;
+      margin-bottom: 6px;
     }
-    .post-card h2 {
-      margin: 0 0 .35rem;
-      font-size: 1.3rem;
+    .blog-title {
+      font-size: 18px;
+      margin: 0 0 6px;
     }
-    .post-excerpt {
-      font-size: 0.9rem;
-      color: var(--text-muted);
+    .blog-excerpt {
+      margin: 0;
+      font-size: 14px;
+      color: #d1d5db;
     }
     .back-home {
-      margin-top: 2.5rem;
-      font-size: 0.9rem;
-      color: var(--primary-color);
+      display: inline-block;
+      margin-top: 32px;
+      font-size: 14px;
+      color: #a5b4fc;
+      text-decoration: none;
+    }
+    .back-home:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <main>
-    <h1>Blog</h1>
-    <p class="intro">
-      一些关于夏天、代码、小说与生活的长句子。
-    </p>
+  <main class="page">
+    <h1 class="page-title">Blog</h1>
+    <p class="page-subtitle">一些关于夏天、代码、小说与生活的长句子。</p>
 
-    <section class="post-list">
-      <!-- 第一篇文章：以后新增文章就复制这个模块 -->
-      <article class="post-card">
-        <a href="/blog/posts/first-post.html">
-          <div class="post-meta">2025 · Essay</div>
-          <h2>把生活过成 BGM 的那些瞬间</h2>
-          <p class="post-excerpt">
-            这是第一篇示例文章，用来测试从 Blog 列表跳转到文章页面，看看整体感觉。
+    <section class="blog-list">
+      {# 遍历 Eleventy 的 blog 集合 #}
+      {% for post in collections.blog %}
+        <a class="blog-card" href="{{ post.url }}">
+          <p class="blog-meta">
+            {{ post.date | date("yyyy") }} · ESSAY
+          </p>
+          <h2 class="blog-title">{{ post.data.title }}</h2>
+          <p class="blog-excerpt">
+            {{ post.templateContent | striptags | slice(0, 80) }}…
           </p>
         </a>
-      </article>
+      {% endfor %}
     </section>
 
-    <p class="back-home">
-      ← <a href="/">回到首页</a>
-    </p>
+    <a href="/" class="back-home">← 回到首页</a>
   </main>
 </body>
 </html>
