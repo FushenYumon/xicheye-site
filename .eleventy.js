@@ -15,10 +15,14 @@ module.exports = function (eleventyConfig) {
     return d.toLocaleDateString("zh-CN");
   });
 
+  // 让 Eleventy 原样拷贝 images 目录到 _site/images
+  eleventyConfig.addPassthroughCopy("images");
+
   // 告诉 Eleventy：源码在当前目录，输出目录是 _site
   return {
     dir: {
       input: ".",
+      includes: "_includes",
       output: "_site",
     },
   };
