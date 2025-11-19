@@ -1,22 +1,25 @@
-module.exports = function(eleventyConfig) {
-  // 把现有的静态资源直接拷贝过去
-  eleventyConfig.addPassthroughCopy("images");
-  eleventyConfig.addPassthroughCopy("admin");
+// .eleventy.js
+module.exports = function (eleventyConfig) {
+  // 注册一个叫 "date" 的过滤器，给 Nunjucks 模板用
+  eleventyConfig.addFilter("date", function (value, format = "yyyy-MM-dd") {
+    const d = value instanceof Date ? value : new Date(value);
 
-  // 自定义一个 blog 集合：所有 blog/posts/*.md 文件
-  eleventyConfig.addCollection("blog", function (collectionApi) {
-    return collectionApi
-      .getFilteredByGlob("blog/posts/*.md")
-      .sort((a, b) => b.date - a.date); // 按时间倒序
+    if (format === "yyyy-MM-dd") {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    // 其他格式就先简单返回本地化日期
+    return d.toLocaleDateString("zh-CN");
   });
 
+  // 告诉 Eleventy：源码在当前目录，输出目录是 _site
   return {
     dir: {
-      input: ".",     // 输入：当前仓库
-      output: "_site" // 输出目录：_site
+      input: ".",
+      output: "_site",
     },
-    markdownTemplateEngine: "njk",
-    htmlTemplateEngine: "njk",
-    dataTemplateEngine: "njk"
   };
 };
