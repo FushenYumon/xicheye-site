@@ -1,18 +1,22 @@
 backend:
   name: git-gateway
-  branch: main  # 你的主分支
+  branch: main
 
-media_folder: "images/uploads"   # 上传的图片实际存放位置（仓库里）
-public_folder: "/images/uploads" # 网站访问图片的路径
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+site_url: "https://xiche.netlify.app"
 
 collections:
   - name: "blog"
     label: "Blog"
-    folder: "blog/posts"   # 文章文件保存的位置
-    create: true           # 允许在后台新建文章
+    label_singular: "Post"
+    folder: "blog/posts"
+    create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Publish Date", name: "date", widget: "datetime" }
+      # 自动加上 tags: [blog]，以后你在 CMS 里发文就不用去 GitHub 改了
       - { label: "Tags", name: "tags", widget: "hidden", default: ["blog"] }
       - { label: "Body", name: "body", widget: "markdown" }
