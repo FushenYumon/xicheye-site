@@ -168,7 +168,7 @@ layout: null
     </header>
 
     <section class="fiction-grid">
-      {# 按时间倒序浏览小说集合 #}
+      {% comment %} 按时间倒序浏览小说集合 {% endcomment %}
       {% for story in collections.fiction | reverse %}
       <article class="fiction-card">
         {% if story.data.cover %}
@@ -180,10 +180,10 @@ layout: null
         <div class="fiction-card-body">
           <div class="fiction-tag-pill">FICTION</div>
           <h2 class="fiction-card-title">{{ story.data.title }}</h2>
-         <p class="fiction-card-meta">
-  {{ story.date | date: "yyyy-MM-dd" }}
-  {% if story.data.excerpt %} · {{ story.data.excerpt }}{% endif %}
-</p>
+          <p class="fiction-card-meta">
+            {{ story.date | date: "yyyy-MM-dd" }}
+            {% if story.data.excerpt %} · {{ story.data.excerpt }}{% endif %}
+          </p>
           <a class="fiction-card-link" href="{{ story.url }}">
             点击进入阅读 →
           </a>
