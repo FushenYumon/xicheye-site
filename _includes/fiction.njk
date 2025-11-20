@@ -14,13 +14,20 @@
       box-sizing: border-box;
     }
 
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, system-ui, "SF Pro Text",
-        "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #222b45 0, #050814 55%);
-      color: #f5f5f5;
-    }
+   body {
+  margin: 0;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC",
+    -apple-system, BlinkMacSystemFont, system-ui, "SF Pro Text", "Segoe UI",
+    sans-serif;
+  background:
+    /* 左上角一点淡紫光 */
+    radial-gradient(circle at 20% 0%, rgba(129, 140, 248, 0.24) 0, transparent 55%),
+    /* 右下角一点蓝青光，像远处路灯反光在雪上 */
+    radial-gradient(circle at 80% 100%, rgba(56, 189, 248, 0.18) 0, transparent 60%),
+    /* 整体的深夜底色 */
+    radial-gradient(circle at top, #111827 0, #020617 55%);
+  color: #f5f5f5;
+}
 
     .fiction-page {
       min-height: 100vh;
