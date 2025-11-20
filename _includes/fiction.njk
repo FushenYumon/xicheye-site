@@ -51,33 +51,24 @@
     }
 
     .fiction-title {
-      margin: 10px 0 6px;
+      margin: 10px 0 4px;
       font-size: 30px;
       font-weight: 650;
       letter-spacing: 0.03em;
+    }
+
+    /* tagline（简介） */
+    .fiction-tagline {
+      margin: 4px 0 4px;
+      font-size: 14px;
+      color: #e5e7eb;
+      opacity: 0.9;
     }
 
     .fiction-meta {
       font-size: 13px;
       color: #9ca3af;
     }
-
-    /* ✅ 新增：标题下方 tagline（用 excerpt 字段） */
-    .fiction-tagline {
-      margin-top: 6px;
-      font-size: 14px;
-      color: #cbd5f5;
-      opacity: 0.9;
-      font-style: italic;
-    }
-
-    /* ✅ 新增：给标题 + 正文一点点柔和的光晕 */
-    .fiction-body,
-    .fiction-title {
-      text-shadow: 0 0 6px rgba(15, 23, 42, 0.9);
-    }
-
-    /* 这里以后可以放 tagline 和 tag chips */
 
     .fiction-hero {
       margin: 26px 0 18px;
@@ -92,12 +83,11 @@
       height: auto;
     }
 
-    /* —— 下面是正文排版（三件套）—— */
+    /* —— 正文排版 —— */
 
     .fiction-body {
       margin-top: 24px;
       max-width: 720px;
-      /* 正文使用衬线体，优先中文宋体/明朝体 */
       font-family:
         "Songti SC",
         "STSong",
@@ -113,31 +103,19 @@
 
     .fiction-body p {
       margin: 0 0 1.2em;
-      text-indent: 2em; /* 首行缩进两个汉字 */
+      text-indent: 2em;
     }
 
     .fiction-body p:last-child {
       margin-bottom: 0;
     }
 
-    /* 让列表、引文之类的元素不要缩进 */
     .fiction-body ul,
     .fiction-body ol,
     .fiction-body blockquote {
       margin: 0 0 1.2em 0;
       padding-left: 2em;
       text-indent: 0;
-    }
-
-    /* 大屏幕时，让正文区域略微与背景拉开一点点亮度 */
-    .fiction-body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at top, rgba(148, 163, 253, 0.05), transparent 55%);
-      z-index: -1;
     }
 
     /* —— 场景块组件 —— */
@@ -200,18 +178,11 @@
 
     .scene-body p {
       margin: 0 0 0.7em;
-      text-indent: 0; /* 场景内不要首行缩进，看起来更像旁白 */
+      text-indent: 0;
     }
 
     .scene-body p:last-child {
       margin-bottom: 0;
-    }
-
-    .scene-audio {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(15, 23, 42, 0.9);
     }
 
     .scene-audio-label {
@@ -220,12 +191,7 @@
       margin-bottom: 6px;
     }
 
-    .scene-audio audio {
-      width: 100%;
-    }
-
-    /* 背景音乐块（整篇小说的 BGM） */
-
+    /* 整篇小说的背景音乐块（如果你以后还想保留的话） */
     .fiction-audio {
       margin-top: 28px;
       max-width: 720px;
@@ -252,12 +218,12 @@
     <header class="fiction-header">
       <a href="/fiction/" class="fiction-back">← 返回小说列表</a>
       <h1 class="fiction-title">{{ title }}</h1>
+      {% if tagline %}
+        <p class="fiction-tagline">{{ tagline }}</p>
+      {% endif %}
       <p class="fiction-meta">
         {{ page.date | date("yyyy-MM-dd") }}
       </p>
-      {% if excerpt %}
-      <p class="fiction-tagline">{{ excerpt }}</p>
-      {% endif %}
     </header>
 
     {% if cover %}
@@ -280,5 +246,83 @@
     </section>
     {% endif %}
   </main>
+
+  <!-- ✅ 场景 BGM 自动切换脚本（全局隐藏播放器版本） -->
+  <script>
+    (function () {
+      const scenes = Array.from(
+        document.querySelectorAll(".scene-block[data-scene-bgm]")
+      );
+      if (!scenes.length) return;
+
+      // 隐藏的全局 BGM 播放器
+      const bgmPlayer = new Audio();
+      bgmPlayer.loop = true;
+      let currentSrc = null;
+      let unlocked = false;
+
+      function unlock() {
+        unlocked = true;
+        window.removeEventListener("click", unlock);
+        window.removeEventListener("keydown", unlock);
+        window.removeEventListener("wheel", unlock);
+      }
+
+      // 只要用户有过一次交互，我们就认为可以播放 BGM 了
+      window.addEventListener("click", unlock);
+      window.addEventListener("keydown", unlock);
+      window.addEventListener("wheel", unlock);
+
+      function playFor(src) {
+        if (!unlocked || !src) return;
+        if (src === currentSrc && !bgmPlayer.paused) return;
+
+        currentSrc = src;
+        bgmPlayer.src = src;
+        bgmPlayer
+          .play()
+          .catch(function () {
+            // 被浏览器拦了就安静失败，不弹报错
+          });
+      }
+
+      function stop() {
+        currentSrc = null;
+        bgmPlayer.pause();
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          let best = null;
+
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            if (!best || entry.intersectionRatio > best.intersectionRatio) {
+              best = entry;
+            }
+          }
+
+          if (best) {
+            const src = best.target.getAttribute("data-scene-bgm");
+            if (src) {
+              playFor(src);
+            }
+          } else {
+            // 如果当前没有任何场景在视口中，就停掉 BGM
+            const anyVisible = scenes.some((sc) => {
+              const rect = sc.getBoundingClientRect();
+              return rect.top < window.innerHeight && rect.bottom > 0;
+            });
+            if (!anyVisible) {
+              stop();
+            }
+          }
+        },
+        { threshold: 0.4 }
+      );
+
+      scenes.forEach((scene) => observer.observe(scene));
+    })();
+  </script>
 </body>
 </html>
