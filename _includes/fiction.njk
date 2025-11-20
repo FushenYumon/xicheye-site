@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ title }} | Ye</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #05060a;
+      color: #f5f5f5;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(16px);
+      background: rgba(5, 6, 10, 0.8);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .site-header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+
+    .site-title {
+      font-weight: 600;
+    }
+
+    .site-nav a {
+      margin-left: 16px;
+      text-decoration: none;
+      color: #cfd2ff;
+      opacity: 0.8;
+    }
+
+    .site-nav a:hover {
+      opacity: 1;
+    }
+
+    main.fiction-page {
+      max-width: 720px;
+      margin: 32px auto 80px;
+      padding: 0 16px 80px;
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .fiction-title {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .fiction-meta {
+      font-size: 13px;
+      opacity: 0.7;
+      margin-bottom: 32px;
+    }
+
+    .fiction-content p {
+      margin: 0 0 1.1em;
+    }
+
+    /* ===== 场景块：带图片 / 音乐 ===== */
+    .story-scene {
+      position: relative;
+      margin: 32px -12px;
+      padding: 16px 16px 20px;
+      border-radius: 16px;
+      background: radial-gradient(circle at top, #22293b, #05060a);
+      border: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.6);
+      overflow: hidden;
+
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .story-scene.scene-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .story-scene img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .scene-label {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-bottom: 4px;
+    }
+
+    .scene-text {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .audio-indicator {
+      position: absolute;
+      right: 14px;
+      bottom: 10px;
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .audio-indicator::before {
+      content: "♪ ";
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="site-title">Ye</div>
+      <nav class="site-nav">
+        <a href="/">Home</a>
+        <a href="/blog/">Blog</a>
+        <a href="/#about">About</a>
+        <!-- 以后可以在这里加 Fiction 链接 -->
+      </nav>
+    </div>
+  </header>
+
+  <main class="fiction-page">
+    <article>
+      <h1 class="fiction-title">{{ title }}</h1>
+      <div class="fiction-meta">
+        {{ date | date: "yyyy-MM-dd" }}
+      </div>
+
+      <div class="fiction-content">
+        {{ content | safe }}
+      </div>
+    </article>
+  </main>
+
+  <!-- 场景块进入视口时淡入 + 播放音乐 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const scenes = document.querySelectorAll(".story-scene");
+      if (!scenes.length) return;
+
+      const audio = new Audio();
+      let currentSrc = null;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            el.classList.add("scene-visible");
+
+            const src = el.dataset.audio;
+            if (src && src !== currentSrc) {
+              currentSrc = src;
+              audio.src = src;
+              audio.loop = false;
+              audio.volume = 0.7;
+              audio.play().catch(() => {
+                // 如果浏览器因为没有交互而禁止自动播放，就静默忽略
+              });
+            }
+          }
+        });
+      }, {
+        threshold: 0.6
+      });
+
+      scenes.forEach(scene => observer.observe(scene));
+    });
+  </script>
+</body>
+</html>
