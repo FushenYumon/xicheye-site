@@ -25,29 +25,26 @@ module.exports = function (eleventyConfig) {
   });
 
   // ✅ 场景块 shortcode：{% scene "标题", "/images/xxx.jpg", "/audio/yyy.mp3" %} ... {% endscene %}
+  // 这里不再渲染 <audio> 播放器，而是给场景加 data-scene-bgm，交给全局 JS 自动播放
   eleventyConfig.addPairedShortcode(
     "scene",
     function (content, title, imagePath, audioPath) {
       const safeTitle = title || "";
+      const safeImage = imagePath || "";
+      const safeAudio = audioPath || "";
 
-      const imageHTML = imagePath
-        ? `<div class="scene-media">
-             <img src="${imagePath}" alt="${safeTitle || "场景插图"}">
-           </div>`
+      const dataAttr = safeAudio
+        ? ` data-scene-bgm="${safeAudio}"`
         : "";
 
-      const audioHTML = audioPath
-        ? `<div class="scene-audio">
-             <div class="scene-audio-label">场景音乐</div>
-             <audio controls preload="none">
-               <source src="${audioPath}" type="audio/mpeg">
-               你的浏览器不支持音频播放。
-             </audio>
+      const imageHTML = safeImage
+        ? `<div class="scene-media">
+             <img src="${safeImage}" alt="${safeTitle || "场景插图"}" loading="lazy">
            </div>`
         : "";
 
       return `
-<section class="scene-block">
+<section class="scene-block"${dataAttr}>
   ${imageHTML}
   <div class="scene-text">
     ${
@@ -58,7 +55,6 @@ module.exports = function (eleventyConfig) {
     <div class="scene-body">
       ${content}
     </div>
-    ${audioHTML}
   </div>
 </section>
 `;
