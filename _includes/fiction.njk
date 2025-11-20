@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <title>{{ title }}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
     :root {
@@ -14,19 +14,38 @@
       box-sizing: border-box;
     }
 
+    /* —— 通用背景：云光 + 夜色 —— */
     body {
       margin: 0;
       font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC",
         -apple-system, BlinkMacSystemFont, system-ui, "SF Pro Text", "Segoe UI",
         sans-serif;
       background:
-        /* 左上角一点淡紫光 */
+        /* 左上角淡紫光 */
         radial-gradient(circle at 20% 0%, rgba(129, 140, 248, 0.24) 0, transparent 55%),
-        /* 右下角一点蓝青光，像远处路灯反光在雪上 */
+        /* 右下角蓝青光，像远处路灯反光在雪上 */
         radial-gradient(circle at 80% 100%, rgba(56, 189, 248, 0.18) 0, transparent 60%),
         /* 整体的深夜底色 */
         radial-gradient(circle at top, #111827 0, #020617 55%);
       color: #f5f5f5;
+    }
+
+    /* —— 页面淡入动画 —— */
+    .page-fade {
+      animation: pageFadeIn 650ms ease-out both;
+    }
+
+    @keyframes pageFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+        filter: blur(2px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
     }
 
     .fiction-page {
@@ -51,24 +70,18 @@
     }
 
     .fiction-title {
-      margin: 10px 0 4px;
+      margin: 10px 0 6px;
       font-size: 30px;
       font-weight: 650;
       letter-spacing: 0.03em;
-    }
-
-    /* tagline（简介） */
-    .fiction-tagline {
-      margin: 4px 0 4px;
-      font-size: 14px;
-      color: #e5e7eb;
-      opacity: 0.9;
     }
 
     .fiction-meta {
       font-size: 13px;
       color: #9ca3af;
     }
+
+    /* 以后可以在这里放 tagline 和 tag chips */
 
     .fiction-hero {
       margin: 26px 0 18px;
@@ -83,7 +96,7 @@
       height: auto;
     }
 
-    /* —— 正文排版 —— */
+    /* —— 正文排版（三件套） —— */
 
     .fiction-body {
       margin-top: 24px;
@@ -103,7 +116,7 @@
 
     .fiction-body p {
       margin: 0 0 1.2em;
-      text-indent: 2em;
+      text-indent: 2em; /* 首行缩进两个汉字 */
     }
 
     .fiction-body p:last-child {
@@ -185,13 +198,25 @@
       margin-bottom: 0;
     }
 
+    .scene-audio {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
     .scene-audio-label {
       font-size: 12px;
       color: #9ca3af;
       margin-bottom: 6px;
     }
 
-    /* 整篇小说的背景音乐块（如果你以后还想保留的话） */
+    .scene-audio audio {
+      width: 100%;
+    }
+
+    /* —— 整篇小说 BGM 块（可选） —— */
+
     .fiction-audio {
       margin-top: 28px;
       max-width: 720px;
@@ -214,13 +239,10 @@
   </style>
 </head>
 <body>
-  <main class="fiction-page">
+  <main class="fiction-page page-fade">
     <header class="fiction-header">
       <a href="/fiction/" class="fiction-back">← 返回小说列表</a>
       <h1 class="fiction-title">{{ title }}</h1>
-      {% if tagline %}
-        <p class="fiction-tagline">{{ tagline }}</p>
-      {% endif %}
       <p class="fiction-meta">
         {{ page.date | date("yyyy-MM-dd") }}
       </p>
@@ -228,7 +250,7 @@
 
     {% if cover %}
     <figure class="fiction-hero">
-      <img src="{{ cover }}" alt="{{ title }} 封面图">
+      <img src="{{ cover }}" alt="{{ title }} 封面图" />
     </figure>
     {% endif %}
 
@@ -240,89 +262,11 @@
     <section class="fiction-audio">
       <div class="fiction-audio-label">背景音乐</div>
       <audio controls preload="none">
-        <source src="{{ audio }}" type="audio/mpeg">
+        <source src="{{ audio }}" type="audio/mpeg" />
         你的浏览器不支持音频播放。
       </audio>
     </section>
     {% endif %}
   </main>
-
-  <!-- ✅ 场景 BGM 自动切换脚本（全局隐藏播放器版本） -->
-  <script>
-    (function () {
-      const scenes = Array.from(
-        document.querySelectorAll(".scene-block[data-scene-bgm]")
-      );
-      if (!scenes.length) return;
-
-      // 隐藏的全局 BGM 播放器
-      const bgmPlayer = new Audio();
-      bgmPlayer.loop = true;
-      let currentSrc = null;
-      let unlocked = false;
-
-      function unlock() {
-        unlocked = true;
-        window.removeEventListener("click", unlock);
-        window.removeEventListener("keydown", unlock);
-        window.removeEventListener("wheel", unlock);
-      }
-
-      // 只要用户有过一次交互，我们就认为可以播放 BGM 了
-      window.addEventListener("click", unlock);
-      window.addEventListener("keydown", unlock);
-      window.addEventListener("wheel", unlock);
-
-      function playFor(src) {
-        if (!unlocked || !src) return;
-        if (src === currentSrc && !bgmPlayer.paused) return;
-
-        currentSrc = src;
-        bgmPlayer.src = src;
-        bgmPlayer
-          .play()
-          .catch(function () {
-            // 被浏览器拦了就安静失败，不弹报错
-          });
-      }
-
-      function stop() {
-        currentSrc = null;
-        bgmPlayer.pause();
-      }
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          let best = null;
-
-          for (const entry of entries) {
-            if (!entry.isIntersecting) continue;
-            if (!best || entry.intersectionRatio > best.intersectionRatio) {
-              best = entry;
-            }
-          }
-
-          if (best) {
-            const src = best.target.getAttribute("data-scene-bgm");
-            if (src) {
-              playFor(src);
-            }
-          } else {
-            // 如果当前没有任何场景在视口中，就停掉 BGM
-            const anyVisible = scenes.some((sc) => {
-              const rect = sc.getBoundingClientRect();
-              return rect.top < window.innerHeight && rect.bottom > 0;
-            });
-            if (!anyVisible) {
-              stop();
-            }
-          }
-        },
-        { threshold: 0.4 }
-      );
-
-      scenes.forEach((scene) => observer.observe(scene));
-    })();
-  </script>
 </body>
 </html>
