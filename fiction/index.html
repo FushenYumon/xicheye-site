@@ -1,196 +1,193 @@
 ---
 title: Fiction
+layout: null
 ---
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <title>Fiction | Ye</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
-    :root { color-scheme: dark; }
-    * { box-sizing: border-box; }
+    :root {
+      color-scheme: dark;
+    }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    /* 和小说正文页统一的背景 */
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, system-ui, "SF Pro Text",
         "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #222b45 0, #050814 55%);
+      background:
+        radial-gradient(circle at 20% 0%, rgba(129, 140, 248, 0.24) 0, transparent 55%),
+        radial-gradient(circle at 80% 100%, rgba(56, 189, 248, 0.18) 0, transparent 60%),
+        radial-gradient(circle at top, #111827 0, #020617 55%);
       color: #f5f5f5;
     }
 
-    .page {
-      min-height: 100vh;
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 32px 20px 48px;
+    /* 页面淡入动画（和正文页一致） */
+    .page-fade {
+      animation: pageFadeIn 650ms ease-out both;
     }
 
-    .header {
+    @keyframes pageFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+        filter: blur(2px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    .fiction-list-page {
+      min-height: 100vh;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+
+    .fiction-list-header {
       margin-bottom: 24px;
     }
 
-    .back-link {
+    .fiction-list-back {
       font-size: 14px;
       color: #aab3ff;
       text-decoration: none;
     }
-    .back-link:hover { text-decoration: underline; }
 
-    .title {
-      margin: 8px 0 4px;
-      font-size: 30px;
-      font-weight: 650;
+    .fiction-list-back:hover {
+      text-decoration: underline;
     }
 
-    .subtitle {
-      margin: 0;
+    .fiction-list-title {
+      margin: 12px 0 4px;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .fiction-list-subtitle {
       font-size: 14px;
       color: #9ca3af;
     }
 
-    .grid {
-      margin-top: 28px;
+    .fiction-grid {
+      margin-top: 24px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
     }
 
-    .card {
+    .fiction-card {
       border-radius: 20px;
       overflow: hidden;
-      background: rgba(9, 12, 28, 0.96);
-      box-shadow: 0 20px 40px rgba(0,0,0,.6);
-    }
-
-    .card-link {
-      color: inherit;
-      text-decoration: none;
+      background: rgba(15, 23, 42, 0.9);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
       display: flex;
       flex-direction: column;
-      height: 100%;
+      min-height: 220px;
     }
 
-    .card-thumb {
+    .fiction-card-cover {
       position: relative;
-      padding-top: 66%;
-      background: radial-gradient(circle at top, #4f46e5, #020617);
+      padding-top: 60%;
+      background: radial-gradient(circle at 20% 0, #4f46e5, #1f2937);
+      overflow: hidden;
     }
 
-    .card-thumb img {
+    .fiction-card-cover img {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
 
-    .card-thumb-placeholder {
-      position: absolute;
-      inset: 0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size: 40px;
-      font-weight: 700;
-      color:#e5e7eb;
-    }
-
-    .card-body {
+    .fiction-card-body {
       padding: 14px 16px 16px;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      height: 100%;
+      flex: 1;
     }
 
-    .card-title {
-      margin: 0;
+    .fiction-card-title {
       font-size: 18px;
       font-weight: 600;
     }
 
-    .card-meta {
-      margin: 0;
+    .fiction-card-meta {
       font-size: 12px;
       color: #9ca3af;
     }
 
-    .card-tagline {
-      margin: 4px 0 0;
+    .fiction-card-link {
+      margin-top: auto;
       font-size: 13px;
-      color: #e5e7eb;
-      opacity: .92;
+      color: #c7d2fe;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    .card-tags {
-      margin-top: 6px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px;
+    .fiction-card-link:hover {
+      text-decoration: underline;
     }
 
-    .card-tag {
+    .fiction-tag-pill {
+      display: inline-flex;
       padding: 2px 8px;
-      border-radius:999px;
-      font-size:11px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      background:rgba(148,163,253,.2);
-      color:#c7d2fe;
-    }
-
-    .card-readmore {
-      margin-top: 10px;
-      font-size: 12px;
-      color:#a5b4fc;
+      border-radius: 999px;
+      background: rgba(148, 163, 253, 0.16);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #c7d2fe;
     }
   </style>
 </head>
 <body>
-  <main class="page">
-    <header class="header">
-      <a href="/" class="back-link">← 返回主页</a>
-      <h1 class="title">Fiction</h1>
-      <p class="subtitle">一些正在生长的故事。</p>
+  <main class="fiction-list-page page-fade">
+    <header class="fiction-list-header">
+      <a href="/" class="fiction-list-back">← 返回首页</a>
+      <h1 class="fiction-list-title">Fiction</h1>
+      <p class="fiction-list-subtitle">一些正在写的故事。</p>
     </header>
 
-    <section class="grid">
-      {% assign stories = collections.fiction | reverse %}
-      {% for story in stories %}
-      <article class="card">
-        <a class="card-link" href="{{ story.url }}">
-          <div class="card-thumb">
-            {% if story.data.cover %}
-              <img src="{{ story.data.cover }}" alt="{{ story.data.title }} 封面图">
-            {% else %}
-              <div class="card-thumb-placeholder">
-                {{ story.data.title | slice: 0, 1 }}
-              </div>
-            {% endif %}
-          </div>
-          <div class="card-body">
-            <h2 class="card-title">{{ story.data.title }}</h2>
-            <p class="card-meta">
-              {{ story.date | date: "yyyy-MM-dd" }}
-            </p>
+    <section class="fiction-grid">
+      {# 按时间倒序浏览小说集合 #}
+      {% for story in collections.fiction | reverse %}
+      <article class="fiction-card">
+        {% if story.data.cover %}
+        <div class="fiction-card-cover">
+          <img src="{{ story.data.cover }}" alt="{{ story.data.title }} 封面">
+        </div>
+        {% endif %}
 
-            {% if story.data.excerpt %}
-              <p class="card-tagline">{{ story.data.excerpt }}</p>
-            {% endif %}
-
-            {% if story.data.tags %}
-              <div class="card-tags">
-                {% for tag in story.data.tags %}
-                  <span class="card-tag">{{ tag }}</span>
-                {% endfor %}
-              </div>
-            {% endif %}
-
-            <p class="card-readmore">点击进入阅读 →</p>
-          </div>
-        </a>
+        <div class="fiction-card-body">
+          <div class="fiction-tag-pill">FICTION</div>
+          <h2 class="fiction-card-title">{{ story.data.title }}</h2>
+          <p class="fiction-card-meta">
+            {{ story.date | date("yyyy-MM-dd") }}
+            {% if story.data.excerpt %} · {{ story.data.excerpt }}{% endif %}
+          </p>
+          <a class="fiction-card-link" href="{{ story.url }}">
+            点击进入阅读 →
+          </a>
+        </div>
       </article>
       {% endfor %}
     </section>
