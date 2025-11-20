@@ -111,15 +111,15 @@
     </section>
 
     {# 背景音乐：如果有 bgm，就渲染一个播放器 #}
-    {% if bgm %}
-      <section class="fiction-audio">
-        <div class="fiction-audio-label">背景音乐</div>
-        <audio controls preload="none">
-          <source src="{{ bgm }}" type="audio/mpeg">
-          你的浏览器不支持音频播放。
-        </audio>
-      </section>
-    {% endif %}
+    {% if audio %}
+<section class="fiction-audio">
+  <div class="fiction-audio-label">背景音乐</div>
+  <audio controls preload="none">
+    <source src="{{ audio }}" type="audio/mpeg">
+    你的浏览器不支持音频播放。
+  </audio>
+</section>
+{% endif %}
   </main>
 </body>
 </html>
