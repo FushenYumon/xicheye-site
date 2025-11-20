@@ -14,35 +14,29 @@
       box-sizing: border-box;
     }
 
-   body {
-  margin: 0;
-  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC",
-    -apple-system, BlinkMacSystemFont, system-ui, "SF Pro Text", "Segoe UI",
-    sans-serif;
-  background:
-    /* 左上角一点淡紫光 */
-    radial-gradient(circle at 20% 0%, rgba(129, 140, 248, 0.24) 0, transparent 55%),
-    /* 右下角一点蓝青光，像远处路灯反光在雪上 */
-    radial-gradient(circle at 80% 100%, rgba(56, 189, 248, 0.18) 0, transparent 60%),
-    /* 整体的深夜底色 */
-    radial-gradient(circle at top, #111827 0, #020617 55%);
-  color: #f5f5f5;
-}
+    body {
+      margin: 0;
+      /* 文学感：优先用衬线体，逐层降级 */
+      font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC",
+        "STSong", "SimSun", serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 60%);
+      color: #e5e7eb;
+    }
 
     .fiction-page {
       min-height: 100vh;
-      max-width: 880px;
+      max-width: 720px;
       margin: 0 auto;
-      padding: 32px 20px 64px;
+      padding: 56px 24px 80px;
     }
 
     .fiction-header {
-      margin-bottom: 18px;
+      margin-bottom: 28px;
     }
 
     .fiction-back {
-      font-size: 14px;
-      color: #aab3ff;
+      font-size: 13px;
+      color: #a5b4fc;
       text-decoration: none;
     }
 
@@ -51,78 +45,52 @@
     }
 
     .fiction-title {
-      margin: 10px 0 6px;
+      margin: 10px 0 4px;
       font-size: 30px;
-      font-weight: 650;
-      letter-spacing: 0.03em;
+      font-weight: 600;
+      letter-spacing: 0.06em;
     }
 
     .fiction-meta {
-      font-size: 13px;
+      font-size: 12px;
       color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
     }
 
-    /* 这里以后可以放 tagline 和 tag chips */
-
-    .fiction-hero {
-      margin: 26px 0 18px;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 22px 40px rgba(0, 0, 0, 0.55);
+    /* 简介 / 摘要，当作 tagline 用 */
+    .fiction-tagline {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #cbd5f5;
+      opacity: 0.9;
+      font-style: italic;
     }
 
-    .fiction-hero img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-
-    /* —— 下面是正文排版（三件套）—— */
-
+    /* 正文排版：小说风格 */
     .fiction-body {
-      margin-top: 24px;
-      max-width: 720px;
-      /* 正文使用衬线体，优先中文宋体/明朝体 */
-      font-family:
-        "Songti SC",
-        "STSong",
-        "SimSun",
-        "Noto Serif CJK SC",
-        "Source Han Serif SC",
-        "Times New Roman",
-        serif;
+      margin-top: 40px;
       font-size: 17px;
       line-height: 1.9;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.03em;
+      text-align: justify;
+      text-justify: inter-ideograph;
     }
 
     .fiction-body p {
-      margin: 0 0 1.2em;
-      text-indent: 2em; /* 首行缩进两个汉字 */
+      margin: 0 0 1.3em;
+      text-indent: 2em;
     }
 
-    .fiction-body p:last-child {
-      margin-bottom: 0;
-    }
-
-    /* 让列表、引文之类的元素不要缩进 */
-    .fiction-body ul,
-    .fiction-body ol,
-    .fiction-body blockquote {
-      margin: 0 0 1.2em 0;
-      padding-left: 2em;
+    /* 第一段不缩进 */
+    .fiction-body p:first-child {
       text-indent: 0;
     }
 
-    /* 大屏幕时，让正文区域略微与背景拉开一点点亮度 */
-    .fiction-body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at top, rgba(148, 163, 253, 0.05), transparent 55%);
-      z-index: -1;
+    /* 轻微文字光晕，让白字更柔和 */
+    .fiction-body,
+    .fiction-title {
+      text-shadow: 0 0 6px rgba(15, 23, 42, 0.9);
     }
 
     /* —— 场景块组件 —— */
@@ -134,14 +102,14 @@
       border-radius: 20px;
       background: radial-gradient(
         circle at top left,
-        rgba(148, 163, 253, 0.16),
-        rgba(15, 23, 42, 0.95)
+        rgba(148, 163, 253, 0.18),
+        rgba(15, 23, 42, 0.97)
       );
       display: grid;
       grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr);
       gap: 20px;
       align-items: stretch;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
     }
 
     @media (max-width: 768px) {
@@ -173,7 +141,7 @@
       font-size: 11px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      background: rgba(148, 163, 253, 0.18);
+      background: rgba(148, 163, 253, 0.2);
       color: #c7d2fe;
     }
 
@@ -185,11 +153,7 @@
 
     .scene-body p {
       margin: 0 0 0.7em;
-      text-indent: 0; /* 场景内不要首行缩进，看起来更像旁白 */
-    }
-
-    .scene-body p:last-child {
-      margin-bottom: 0;
+      text-indent: 0; /* 场景说明不缩进 */
     }
 
     .scene-audio {
@@ -209,25 +173,19 @@
       width: 100%;
     }
 
-    /* 背景音乐块（整篇小说的 BGM） */
-
+    /* 还是保留全局 audio 的样式，给结尾 BGM 用 */
     .fiction-audio {
-      margin-top: 28px;
-      max-width: 720px;
-      padding: 14px 18px;
-      border-radius: 16px;
-      background: rgba(15, 23, 42, 0.9);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      margin-top: 32px;
+      padding: 14px 0;
     }
 
     .fiction-audio-label {
       font-size: 14px;
       color: #cbd5f5;
+      margin-bottom: 6px;
     }
 
-    audio {
+    .fiction-audio audio {
       width: 100%;
     }
   </style>
@@ -238,28 +196,33 @@
       <a href="/fiction/" class="fiction-back">← 返回小说列表</a>
       <h1 class="fiction-title">{{ title }}</h1>
       <p class="fiction-meta">
-        {{ page.date | date("yyyy-MM-dd") }}
+        FICTION · {{ page.date | date("yyyy-MM-dd") }}
       </p>
+      {% if excerpt %}
+        <p class="fiction-tagline">{{ excerpt }}</p>
+      {% endif %}
     </header>
 
+    {# 封面图片：如果有 cover，就显示 Admin 里选的那张 #}
     {% if cover %}
-    <figure class="fiction-hero">
-      <img src="{{ cover }}" alt="{{ title }} 封面图">
-    </figure>
+      <figure class="fiction-hero">
+        <img src="{{ cover }}" alt="{{ title }} 封面图">
+      </figure>
     {% endif %}
 
     <section class="fiction-body">
       {{ content | safe }}
     </section>
 
+    {# 全局背景音乐：如果有 audio，就渲染一个播放器 #}
     {% if audio %}
-    <section class="fiction-audio">
-      <div class="fiction-audio-label">背景音乐</div>
-      <audio controls preload="none">
-        <source src="{{ audio }}" type="audio/mpeg">
-        你的浏览器不支持音频播放。
-      </audio>
-    </section>
+      <section class="fiction-audio">
+        <div class="fiction-audio-label">背景音乐</div>
+        <audio controls preload="none">
+          <source src="{{ audio }}" type="audio/mpeg">
+          你的浏览器不支持音频播放。
+        </audio>
+      </section>
     {% endif %}
   </main>
 </body>
