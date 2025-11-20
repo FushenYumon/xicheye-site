@@ -1,3 +1,8 @@
+---
+layout: null
+title: Fiction
+---
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -6,78 +11,90 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    :root { color-scheme: dark; }
-    * { box-sizing: border-box; }
+    :root {
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, system-ui, "SF Pro Text",
         "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #111827 0, #020617 60%);
-      color: #f9fafb;
+      background: radial-gradient(circle at top, #020617 0, #020617 45%, #000000 100%);
+      color: #e5e7eb;
     }
 
-    .page {
+    .page-shell {
       min-height: 100vh;
-      max-width: 900px;
+      max-width: 1024px;
       margin: 0 auto;
-      padding: 32px 20px 48px;
+      padding: 32px 20px 56px;
     }
 
     .page-header {
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
 
-    .back-link {
+    .page-back {
       font-size: 14px;
       color: #a5b4fc;
       text-decoration: none;
     }
-    .back-link:hover { text-decoration: underline; }
+    .page-back:hover {
+      text-decoration: underline;
+    }
 
-    .title {
-      margin: 10px 0 6px;
+    .page-title {
+      margin: 10px 0 4px;
       font-size: 28px;
       font-weight: 650;
     }
 
-    .subtitle {
+    .page-sub {
       font-size: 13px;
       color: #9ca3af;
     }
 
-    .grid {
+    .card-grid {
       margin-top: 28px;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 18px;
+      gap: 20px;
     }
 
-    .card {
-      display: block;
-      background: rgba(15, 23, 42, 0.95);
+    .fiction-card {
+      display: flex;
+      flex-direction: column;
       border-radius: 18px;
-      padding: 16px 16px 18px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
+      overflow: hidden;
       text-decoration: none;
-      color: inherit;
-      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.55);
+      background: radial-gradient(circle at top left,
+        rgba(148, 163, 253, 0.18),
+        rgba(15, 23, 42, 0.98)
+      );
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(148, 163, 253, 0.2);
       transition: transform 0.18s ease, box-shadow 0.18s ease,
-        border-color 0.18s ease;
+                  border-color 0.18s ease, background 0.18s ease;
     }
 
-    .card:hover {
+    .fiction-card:hover {
       transform: translateY(-4px);
-      border-color: #a5b4fc;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.75);
+      box-shadow: 0 24px 55px rgba(0, 0, 0, 0.8);
+      border-color: rgba(196, 181, 253, 0.9);
+      background: radial-gradient(circle at top left,
+        rgba(196, 181, 253, 0.24),
+        rgba(15, 23, 42, 1)
+      );
     }
 
     .card-cover {
-      width: 100%;
+      position: relative;
       aspect-ratio: 16 / 9;
-      border-radius: 14px;
       overflow: hidden;
-      margin-bottom: 12px;
       background: #020617;
     }
 
@@ -86,64 +103,103 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .fiction-card:hover .card-cover img {
+      transform: scale(1.05);
+    }
+
+    .card-body {
+      padding: 16px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .card-title {
       font-size: 17px;
       font-weight: 600;
-      margin: 4px 0 4px;
+      color: #f9fafb;
+      margin: 0;
     }
 
     .card-meta {
       font-size: 12px;
       color: #9ca3af;
-      margin-bottom: 6px;
+      margin: 0;
     }
 
-    .card-summary {
+    .card-tagline {
       font-size: 13px;
-      color: #e5e7eb;
+      color: #cbd5f5;
+      margin-top: 6px;
+    }
+
+    .card-excerpt {
+      font-size: 13px;
+      color: #d1d5db;
+      margin-top: 6px;
       line-height: 1.6;
     }
 
+    .card-footer {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #a5b4fc;
+      opacity: 0.85;
+    }
+
     @media (max-width: 640px) {
-      .title { font-size: 24px; }
+      .page-shell {
+        padding: 24px 14px 40px;
+      }
+      .page-title {
+        font-size: 24px;
+      }
     }
   </style>
 </head>
 <body>
-  <main class="page">
+  <main class="page-shell">
     <header class="page-header">
-      <a href="/" class="back-link">← 回到首页</a>
-      <h1 class="title">Fiction</h1>
-      <p class="subtitle">一些慢慢写着的故事。</p>
+      <a href="/" class="page-back">← 回到主页</a>
+      <h1 class="page-title">Fiction</h1>
+      <p class="page-sub">一些正在写的故事。</p>
     </header>
 
-    <section class="grid">
-      {% for story in collections.fiction | reverse %}
-        <a class="card" href="{{ story.url }}">
-          {% if story.data.cover %}
-            <div class="card-cover">
-              <img src="{{ story.data.cover }}" alt="{{ story.data.title }}">
-            </div>
-          {% endif %}
+    <section class="card-grid">
+      {%- assign stories = collections.fiction | reverse -%}
+      {%- for story in stories -%}
+        <a href="{{ story.url }}" class="fiction-card">
+          {%- if story.data.cover -%}
+          <div class="card-cover">
+            <img src="{{ story.data.cover }}" alt="{{ story.data.title }} 封面">
+          </div>
+          {%- endif -%}
 
-          <h2 class="card-title">
-            {{ story.data.title }}
-          </h2>
+          <div class="card-body">
+            <h2 class="card-title">{{ story.data.title }}</h2>
 
-          <p class="card-meta">
-            {{ story.date | date("yyyy-MM-dd") }}
-            {% if story.data.tagline %} · {{ story.data.tagline }}{% endif %}
-          </p>
-
-          {% if story.data.summary %}
-            <p class="card-summary">
-              {{ story.data.summary }}
+            <p class="card-meta">
+              {{ story.date | date: "%Y-%m-%d" }}
+              {%- if story.data.tagline -%}
+                · {{ story.data.tagline }}
+              {%- endif -%}
             </p>
-          {% endif %}
+
+            {%- if story.data.excerpt -%}
+              <p class="card-excerpt">
+                {{ story.data.excerpt }}
+              </p>
+            {%- endif -%}
+
+            <div class="card-footer">
+              点击进入阅读 →
+            </div>
+          </div>
         </a>
-      {% endfor %}
+      {%- endfor -%}
     </section>
   </main>
 </body>
