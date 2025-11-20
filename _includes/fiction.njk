@@ -6,34 +6,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    :root { color-scheme: dark; }
+    :root {
+      color-scheme: dark;
+    }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, system-ui, "SF Pro Text",
         "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #111827 0, #020617 55%);
-      color: #f9fafb;
+      background: radial-gradient(circle at top, #222b45 0, #050814 55%);
+      color: #f5f5f5;
     }
 
     .fiction-page {
       min-height: 100vh;
-      max-width: 840px;
+      max-width: 880px;
       margin: 0 auto;
-      padding: 32px 18px 60px;
+      padding: 32px 20px 64px;
     }
 
-    /* ---------- 头部 ---------- */
-
     .fiction-header {
-      margin-bottom: 8px;
+      margin-bottom: 18px;
     }
 
     .fiction-back {
-      font-size: 13px;
-      color: #a5b4fc;
+      font-size: 14px;
+      color: #aab3ff;
       text-decoration: none;
     }
 
@@ -42,47 +44,24 @@
     }
 
     .fiction-title {
-      margin: 10px 0 4px;
+      margin: 10px 0 6px;
       font-size: 30px;
       font-weight: 650;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.03em;
     }
 
-    .fiction-meta-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 4px;
+    .fiction-meta {
       font-size: 13px;
       color: #9ca3af;
     }
 
-    .fiction-chip {
-      padding: 2px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 253, 0.55);
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: #c7d2fe;
-    }
-
-    .fiction-tagline {
-      margin: 6px 0 14px;
-      font-size: 14px;
-      line-height: 1.7;
-      color: #e5e7eb;
-      opacity: 0.9;
-    }
-
-    /* ---------- 封面图 ---------- */
+    /* 这里以后可以放 tagline 和 tag chips */
 
     .fiction-hero {
-      margin: 18px 0 20px;
+      margin: 26px 0 18px;
       border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 22px 40px rgba(0, 0, 0, 0.7);
-      background: #020617;
+      box-shadow: 0 22px 40px rgba(0, 0, 0, 0.55);
     }
 
     .fiction-hero img {
@@ -91,51 +70,71 @@
       height: auto;
     }
 
-    /* ---------- 正文 ---------- */
+    /* —— 下面是正文排版（三件套）—— */
 
     .fiction-body {
-      margin-top: 4px;
-      line-height: 1.9;
+      margin-top: 24px;
+      max-width: 720px;
+      /* 正文使用衬线体，优先中文宋体/明朝体 */
+      font-family:
+        "Songti SC",
+        "STSong",
+        "SimSun",
+        "Noto Serif CJK SC",
+        "Source Han Serif SC",
+        "Times New Roman",
+        serif;
       font-size: 17px;
+      line-height: 1.9;
       letter-spacing: 0.02em;
-      padding: 22px 22px 26px;
-      border-radius: 20px;
-      background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.32), rgba(15, 23, 42, 0.96));
-      backdrop-filter: blur(14px);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.75);
     }
 
     .fiction-body p {
-      margin: 0 0 1.1em;
-      text-indent: 2em;   /* 首行缩进 */
+      margin: 0 0 1.2em;
+      text-indent: 2em; /* 首行缩进两个汉字 */
     }
 
     .fiction-body p:last-child {
       margin-bottom: 0;
     }
 
-    .fiction-body h2,
-    .fiction-body h3,
-    .fiction-body h4 {
-      margin: 1.8em 0 0.8em;
+    /* 让列表、引文之类的元素不要缩进 */
+    .fiction-body ul,
+    .fiction-body ol,
+    .fiction-body blockquote {
+      margin: 0 0 1.2em 0;
+      padding-left: 2em;
       text-indent: 0;
     }
 
-    /* ---------- 场景块组件 ---------- */
+    /* 大屏幕时，让正文区域略微与背景拉开一点点亮度 */
+    .fiction-body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at top, rgba(148, 163, 253, 0.05), transparent 55%);
+      z-index: -1;
+    }
+
+    /* —— 场景块组件 —— */
 
     .scene-block {
-      margin: 30px 0;
+      margin-top: 32px;
+      margin-bottom: 32px;
       padding: 20px;
-      border-radius: 22px;
-      background: radial-gradient(circle at top left,
-          rgba(129, 140, 248, 0.16),
-          rgba(15, 23, 42, 0.96));
+      border-radius: 20px;
+      background: radial-gradient(
+        circle at top left,
+        rgba(148, 163, 253, 0.16),
+        rgba(15, 23, 42, 0.95)
+      );
       display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr);
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr);
       gap: 20px;
       align-items: stretch;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.75);
-      border: 1px solid rgba(148, 163, 253, 0.25);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
     }
 
     @media (max-width: 768px) {
@@ -144,17 +143,13 @@
       }
     }
 
-    .scene-media {
-      border-radius: 18px;
-      overflow: hidden;
-      background: #020617;
-    }
-
     .scene-media img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      border-radius: 16px;
       display: block;
+      background: #020617;
     }
 
     .scene-text {
@@ -166,13 +161,13 @@
     .scene-tag {
       display: inline-flex;
       align-self: flex-start;
-      padding: 4px 11px;
+      padding: 4px 10px;
       border-radius: 999px;
       font-size: 11px;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      background: rgba(129, 140, 248, 0.26);
-      color: #e0e7ff;
+      background: rgba(148, 163, 253, 0.18);
+      color: #c7d2fe;
     }
 
     .scene-body {
@@ -182,39 +177,42 @@
     }
 
     .scene-body p {
-      margin: 0 0 0.8em;
-      text-indent: 0;   /* 场景里不缩进 */
+      margin: 0 0 0.7em;
+      text-indent: 0; /* 场景内不要首行缩进，看起来更像旁白 */
+    }
+
+    .scene-body p:last-child {
+      margin-bottom: 0;
     }
 
     .scene-audio {
-      margin-top: 6px;
-      padding: 9px 11px;
+      margin-top: 10px;
+      padding: 10px 12px;
       border-radius: 14px;
-      background: rgba(15, 23, 42, 0.96);
-      border: 1px solid rgba(148, 163, 253, 0.18);
+      background: rgba(15, 23, 42, 0.9);
     }
 
     .scene-audio-label {
       font-size: 12px;
       color: #9ca3af;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .scene-audio audio {
       width: 100%;
     }
 
-    /* ---------- 底部 BGM ---------- */
+    /* 背景音乐块（整篇小说的 BGM） */
 
     .fiction-audio {
-      margin-top: 26px;
+      margin-top: 28px;
+      max-width: 720px;
       padding: 14px 18px;
       border-radius: 16px;
       background: rgba(15, 23, 42, 0.9);
       display: flex;
       flex-direction: column;
       gap: 8px;
-      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.6);
     }
 
     .fiction-audio-label {
@@ -222,47 +220,39 @@
       color: #cbd5f5;
     }
 
-    audio { width: 100%; }
+    audio {
+      width: 100%;
+    }
   </style>
 </head>
 <body>
   <main class="fiction-page">
     <header class="fiction-header">
       <a href="/fiction/" class="fiction-back">← 返回小说列表</a>
-
       <h1 class="fiction-title">{{ title }}</h1>
-
-      <div class="fiction-meta-row">
-        <span class="fiction-chip">FICTION</span>
-        <span>{{ page.date | date("yyyy-MM-dd") }}</span>
-      </div>
-
-      {# 使用 front matter 里的简介/摘要字段（excerpt）作为 tagline #}
-      {% if excerpt %}
-        <p class="fiction-tagline">{{ excerpt }}</p>
-      {% endif %}
+      <p class="fiction-meta">
+        {{ page.date | date("yyyy-MM-dd") }}
+      </p>
     </header>
 
-    {# 封面图片：有 cover 就显示 #}
     {% if cover %}
-      <figure class="fiction-hero">
-        <img src="{{ cover }}" alt="{{ title }} 封面图">
-      </figure>
+    <figure class="fiction-hero">
+      <img src="{{ cover }}" alt="{{ title }} 封面图">
+    </figure>
     {% endif %}
 
     <section class="fiction-body">
       {{ content | safe }}
     </section>
 
-    {# 底部背景音乐：有 audio 就渲染播放器 #}
     {% if audio %}
-      <section class="fiction-audio">
-        <div class="fiction-audio-label">背景音乐</div>
-        <audio controls preload="none">
-          <source src="{{ audio }}" type="audio/mpeg">
-          你的浏览器不支持音频播放。
-        </audio>
-      </section>
+    <section class="fiction-audio">
+      <div class="fiction-audio-label">背景音乐</div>
+      <audio controls preload="none">
+        <source src="{{ audio }}" type="audio/mpeg">
+        你的浏览器不支持音频播放。
+      </audio>
+    </section>
     {% endif %}
   </main>
 </body>
