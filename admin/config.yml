@@ -29,3 +29,4 @@ collections:
       - { label: "封面图片（选填）", name: "cover", widget: "image", required: false }
       - { label: "背景音乐（选填，mp3）", name: "audio", widget: "file", required: false }
       - { label: "正文", name: "body", widget: "markdown" }
+      - { label: "layout", name: "layout", widget: "hidden", default: "fiction.njk" }
