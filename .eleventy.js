@@ -20,7 +20,13 @@ module.exports = function (eleventyConfig) {
 
   // 关键：把 images 文件夹也原样拷贝到 _site/images
   eleventyConfig.addPassthroughCopy("images");
+  // 小说集合：收集 ./fiction 目录下的所有 md 文件
+  eleventyConfig.addCollection("fiction", function (collectionApi) {
+    return collectionApi.getFilteredByGlob("./fiction/*.md");
+  });
 
+  // 确保 audio 目录里的音乐文件也会被拷贝
+  eleventyConfig.addPassthroughCopy("audio");
   return {
     dir: {
       input: ".",          // 源码在当前目录
