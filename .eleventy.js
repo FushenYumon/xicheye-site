@@ -18,15 +18,56 @@ module.exports = function (eleventyConfig) {
   // 让 Eleventy 直接把 admin 文件夹拷贝到 _site
   eleventyConfig.addPassthroughCopy("admin");
 
-  // 关键：把 images 文件夹也原样拷贝到 _site/images
+  // 把 images 文件夹也原样拷贝到 _site/images
   eleventyConfig.addPassthroughCopy("images");
+
   // 小说集合：收集 ./fiction 目录下的所有 md 文件
   eleventyConfig.addCollection("fiction", function (collectionApi) {
     return collectionApi.getFilteredByGlob("./fiction/*.md");
   });
 
+  // ✅ 在这里加入 scene 的 paired shortcode
+  eleventyConfig.addPairedShortcode(
+    "scene",
+    function (content, title, imageUrl, audioUrl) {
+      const safeTitle = title || "Scene";
+
+      const audioHtml = audioUrl
+        ? `
+      <div class="scene-audio">
+        <div class="scene-audio-label">场景 BGM</div>
+        <audio controls preload="none">
+          <source src="${audioUrl}" type="audio/mpeg">
+          你的浏览器不支持音频播放。
+        </audio>
+      </div>
+      `
+        : "";
+
+      return `
+      <section class="scene-block">
+        <div class="scene-media">
+          ${
+            imageUrl
+              ? `<img src="${imageUrl}" alt="${safeTitle}" loading="lazy">`
+              : ""
+          }
+        </div>
+        <div class="scene-text">
+          <div class="scene-tag">${safeTitle}</div>
+          <div class="scene-body">
+            ${content}
+          </div>
+          ${audioHtml}
+        </div>
+      </section>
+      `;
+    }
+  );
+
   // 确保 audio 目录里的音乐文件也会被拷贝
   eleventyConfig.addPassthroughCopy("audio");
+
   return {
     dir: {
       input: ".",          // 源码在当前目录
