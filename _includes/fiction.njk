@@ -35,14 +35,40 @@
     .fiction-back:hover { text-decoration: underline; }
 
     .fiction-title {
-      margin: 8px 0 4px;
-      font-size: 28px;
+      margin: 8px 0 2px;
+      font-size: 30px;
       font-weight: 650;
     }
 
     .fiction-meta {
       font-size: 13px;
       color: #9ca3af;
+    }
+
+    /* 顶部 tagline（用简介/摘要） */
+    .fiction-tagline {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #e5e7eb;
+      opacity: 0.95;
+    }
+
+    /* 顶部 tags */
+    .fiction-tags {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .fiction-tag {
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: rgba(148, 163, 253, 0.18);
+      color: #c7d2fe;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .fiction-hero {
@@ -57,19 +83,26 @@
       width: 100%;
     }
 
+    /* 正文排版优化 */
     .fiction-body {
-      line-height: 1.8;
-      font-size: 16px;
-      letter-spacing: 0.02em;
-      padding: 20px 18px;
+      line-height: 1.9;
+      font-size: 17px;
+      letter-spacing: 0.01em;
+      padding: 24px 22px;
       border-radius: 18px;
       background: rgba(9, 12, 28, 0.88);
       backdrop-filter: blur(14px);
       box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
     }
 
-    .fiction-body p { margin: 0 0 1em; }
-    .fiction-body p:last-child { margin-bottom: 0; }
+    .fiction-body p {
+      margin: 0 0 1.2em;
+      text-indent: 2em;      /* 首行缩进 */
+    }
+
+    .fiction-body p:last-child {
+      margin-bottom: 0;
+    }
 
     .fiction-audio {
       margin-top: 24px;
@@ -88,8 +121,7 @@
 
     audio { width: 100%; }
 
-    /* ============== 场景块组件（给 shortcode 用） ============== */
-
+    /* 场景块组件 */
     .scene-block {
       margin-top: 32px;
       margin-bottom: 32px;
@@ -148,6 +180,7 @@
 
     .scene-body p {
       margin: 0 0 0.7em;
+      text-indent: 0;  /* 场景块里不缩进 */
     }
 
     .scene-audio {
@@ -166,6 +199,19 @@
     .scene-audio audio {
       width: 100%;
     }
+
+    @media (max-width: 640px) {
+      .fiction-page {
+        padding: 20px 14px 32px;
+      }
+      .fiction-title {
+        font-size: 24px;
+      }
+      .fiction-body {
+        font-size: 16px;
+        padding: 18px 16px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -176,9 +222,20 @@
       <p class="fiction-meta">
         {{ page.date | date("yyyy-MM-dd") }}
       </p>
+
+      {% if excerpt %}
+        <p class="fiction-tagline">{{ excerpt }}</p>
+      {% endif %}
+
+      {% if tags %}
+        <div class="fiction-tags">
+          {% for tag in tags %}
+            <span class="fiction-tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
     </header>
 
-    {# 封面图片：如果 front matter 里有 cover，就显示你在 Admin 里选的那张 #}
     {% if cover %}
       <figure class="fiction-hero">
         <img src="{{ cover }}" alt="{{ title }} 封面图">
@@ -189,7 +246,6 @@
       {{ content | safe }}
     </section>
 
-    {# 背景音乐：如果有 audio，就渲染一个播放器 #}
     {% if audio %}
       <section class="fiction-audio">
         <div class="fiction-audio-label">背景音乐</div>
