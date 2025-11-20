@@ -14,129 +14,128 @@
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, system-ui, "SF Pro Text",
         "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #222b45 0, #050814 55%);
-      color: #f5f5f5;
+      background: radial-gradient(circle at top, #111827 0, #020617 55%);
+      color: #f9fafb;
     }
 
     .fiction-page {
       min-height: 100vh;
-      max-width: 760px;
+      max-width: 840px;
       margin: 0 auto;
-      padding: 32px 20px 48px;
+      padding: 32px 18px 60px;
     }
 
-    .fiction-header { margin-bottom: 24px; }
+    /* ---------- 头部 ---------- */
+
+    .fiction-header {
+      margin-bottom: 8px;
+    }
 
     .fiction-back {
-      font-size: 14px;
-      color: #aab3ff;
+      font-size: 13px;
+      color: #a5b4fc;
       text-decoration: none;
     }
-    .fiction-back:hover { text-decoration: underline; }
 
-    .fiction-title {
-      margin: 8px 0 2px;
-      font-size: 30px;
-      font-weight: 650;
+    .fiction-back:hover {
+      text-decoration: underline;
     }
 
-    .fiction-meta {
+    .fiction-title {
+      margin: 10px 0 4px;
+      font-size: 30px;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+    }
+
+    .fiction-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
       font-size: 13px;
       color: #9ca3af;
     }
 
-    /* 顶部 tagline（用简介/摘要） */
-    .fiction-tagline {
-      margin-top: 8px;
-      font-size: 14px;
-      color: #e5e7eb;
-      opacity: 0.95;
-    }
-
-    /* 顶部 tags */
-    .fiction-tags {
-      margin-top: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .fiction-tag {
+    .fiction-chip {
       padding: 2px 10px;
       border-radius: 999px;
-      background: rgba(148, 163, 253, 0.18);
-      color: #c7d2fe;
+      border: 1px solid rgba(148, 163, 253, 0.55);
       font-size: 11px;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
+      color: #c7d2fe;
     }
 
+    .fiction-tagline {
+      margin: 6px 0 14px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #e5e7eb;
+      opacity: 0.9;
+    }
+
+    /* ---------- 封面图 ---------- */
+
     .fiction-hero {
-      margin: 24px 0;
-      border-radius: 16px;
+      margin: 18px 0 20px;
+      border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 22px 40px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 22px 40px rgba(0, 0, 0, 0.7);
+      background: #020617;
     }
 
     .fiction-hero img {
       display: block;
       width: 100%;
+      height: auto;
     }
 
-    /* 正文排版优化 */
+    /* ---------- 正文 ---------- */
+
     .fiction-body {
+      margin-top: 4px;
       line-height: 1.9;
       font-size: 17px;
-      letter-spacing: 0.01em;
-      padding: 24px 22px;
-      border-radius: 18px;
-      background: rgba(9, 12, 28, 0.88);
+      letter-spacing: 0.02em;
+      padding: 22px 22px 26px;
+      border-radius: 20px;
+      background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.32), rgba(15, 23, 42, 0.96));
       backdrop-filter: blur(14px);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.75);
     }
 
     .fiction-body p {
-      margin: 0 0 1.2em;
-      text-indent: 2em;      /* 首行缩进 */
+      margin: 0 0 1.1em;
+      text-indent: 2em;   /* 首行缩进 */
     }
 
     .fiction-body p:last-child {
       margin-bottom: 0;
     }
 
-    .fiction-audio {
-      margin-top: 24px;
-      padding: 14px 18px;
-      border-radius: 16px;
-      background: rgba(15, 23, 42, 0.9);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    .fiction-body h2,
+    .fiction-body h3,
+    .fiction-body h4 {
+      margin: 1.8em 0 0.8em;
+      text-indent: 0;
     }
 
-    .fiction-audio-label {
-      font-size: 14px;
-      color: #cbd5f5;
-    }
+    /* ---------- 场景块组件 ---------- */
 
-    audio { width: 100%; }
-
-    /* 场景块组件 */
     .scene-block {
-      margin-top: 32px;
-      margin-bottom: 32px;
+      margin: 30px 0;
       padding: 20px;
-      border-radius: 20px;
-      background: radial-gradient(
-        circle at top left,
-        rgba(148, 163, 253, 0.16),
-        rgba(15, 23, 42, 0.95)
-      );
+      border-radius: 22px;
+      background: radial-gradient(circle at top left,
+          rgba(129, 140, 248, 0.16),
+          rgba(15, 23, 42, 0.96));
       display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr);
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr);
       gap: 20px;
       align-items: stretch;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.75);
+      border: 1px solid rgba(148, 163, 253, 0.25);
     }
 
     @media (max-width: 768px) {
@@ -145,13 +144,17 @@
       }
     }
 
+    .scene-media {
+      border-radius: 18px;
+      overflow: hidden;
+      background: #020617;
+    }
+
     .scene-media img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: 16px;
       display: block;
-      background: #020617;
     }
 
     .scene-text {
@@ -163,13 +166,13 @@
     .scene-tag {
       display: inline-flex;
       align-self: flex-start;
-      padding: 4px 10px;
+      padding: 4px 11px;
       border-radius: 999px;
       font-size: 11px;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      background: rgba(148, 163, 253, 0.18);
-      color: #c7d2fe;
+      background: rgba(129, 140, 248, 0.26);
+      color: #e0e7ff;
     }
 
     .scene-body {
@@ -179,63 +182,68 @@
     }
 
     .scene-body p {
-      margin: 0 0 0.7em;
-      text-indent: 0;  /* 场景块里不缩进 */
+      margin: 0 0 0.8em;
+      text-indent: 0;   /* 场景里不缩进 */
     }
 
     .scene-audio {
-      margin-top: 10px;
-      padding: 10px 12px;
+      margin-top: 6px;
+      padding: 9px 11px;
       border-radius: 14px;
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 253, 0.18);
     }
 
     .scene-audio-label {
       font-size: 12px;
       color: #9ca3af;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .scene-audio audio {
       width: 100%;
     }
 
-    @media (max-width: 640px) {
-      .fiction-page {
-        padding: 20px 14px 32px;
-      }
-      .fiction-title {
-        font-size: 24px;
-      }
-      .fiction-body {
-        font-size: 16px;
-        padding: 18px 16px;
-      }
+    /* ---------- 底部 BGM ---------- */
+
+    .fiction-audio {
+      margin-top: 26px;
+      padding: 14px 18px;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.6);
     }
+
+    .fiction-audio-label {
+      font-size: 14px;
+      color: #cbd5f5;
+    }
+
+    audio { width: 100%; }
   </style>
 </head>
 <body>
   <main class="fiction-page">
     <header class="fiction-header">
       <a href="/fiction/" class="fiction-back">← 返回小说列表</a>
-      <h1 class="fiction-title">{{ title }}</h1>
-      <p class="fiction-meta">
-        {{ page.date | date("yyyy-MM-dd") }}
-      </p>
 
+      <h1 class="fiction-title">{{ title }}</h1>
+
+      <div class="fiction-meta-row">
+        <span class="fiction-chip">FICTION</span>
+        <span>{{ page.date | date("yyyy-MM-dd") }}</span>
+      </div>
+
+      {# 使用 front matter 里的简介/摘要字段（excerpt）作为 tagline #}
       {% if excerpt %}
         <p class="fiction-tagline">{{ excerpt }}</p>
       {% endif %}
-
-      {% if tags %}
-        <div class="fiction-tags">
-          {% for tag in tags %}
-            <span class="fiction-tag">{{ tag }}</span>
-          {% endfor %}
-        </div>
-      {% endif %}
     </header>
 
+    {# 封面图片：有 cover 就显示 #}
     {% if cover %}
       <figure class="fiction-hero">
         <img src="{{ cover }}" alt="{{ title }} 封面图">
@@ -246,6 +254,7 @@
       {{ content | safe }}
     </section>
 
+    {# 底部背景音乐：有 audio 就渲染播放器 #}
     {% if audio %}
       <section class="fiction-audio">
         <div class="fiction-audio-label">背景音乐</div>
