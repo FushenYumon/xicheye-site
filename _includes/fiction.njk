@@ -21,11 +21,8 @@
         -apple-system, BlinkMacSystemFont, system-ui, "SF Pro Text", "Segoe UI",
         sans-serif;
       background:
-        /* 左上角淡紫光 */
         radial-gradient(circle at 20% 0%, rgba(129, 140, 248, 0.24) 0, transparent 55%),
-        /* 右下角蓝青光，像远处路灯反光在雪上 */
         radial-gradient(circle at 80% 100%, rgba(56, 189, 248, 0.18) 0, transparent 60%),
-        /* 整体的深夜底色 */
         radial-gradient(circle at top, #111827 0, #020617 55%);
       color: #f5f5f5;
     }
@@ -81,8 +78,6 @@
       color: #9ca3af;
     }
 
-    /* 以后可以在这里放 tagline 和 tag chips */
-
     .fiction-hero {
       margin: 26px 0 18px;
       border-radius: 18px;
@@ -96,8 +91,7 @@
       height: auto;
     }
 
-    /* —— 正文排版（三件套） —— */
-
+    /* —— 正文排版 —— */
     .fiction-body {
       margin-top: 24px;
       max-width: 720px;
@@ -116,7 +110,7 @@
 
     .fiction-body p {
       margin: 0 0 1.2em;
-      text-indent: 2em; /* 首行缩进两个汉字 */
+      text-indent: 2em;
     }
 
     .fiction-body p:last-child {
@@ -132,7 +126,6 @@
     }
 
     /* —— 场景块组件 —— */
-
     .scene-block {
       margin-top: 32px;
       margin-bottom: 32px;
@@ -198,25 +191,7 @@
       margin-bottom: 0;
     }
 
-    .scene-audio {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(15, 23, 42, 0.9);
-    }
-
-    .scene-audio-label {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-bottom: 6px;
-    }
-
-    .scene-audio audio {
-      width: 100%;
-    }
-
-    /* —— 整篇小说 BGM 块（可选） —— */
-
+    /* —— 整篇小说 BGM 块（可选，可见播放器） —— */
     .fiction-audio {
       margin-top: 28px;
       max-width: 720px;
@@ -268,5 +243,85 @@
     </section>
     {% endif %}
   </main>
+
+  <!-- 场景自动 BGM 脚本 -->
+  <script>
+    (function () {
+      // 找出所有带 data-scene-bgm 的场景块
+      const scenes = Array.from(
+        document.querySelectorAll('.scene-block[data-scene-bgm]')
+      );
+      if (!scenes.length) return;
+
+      // 单一隐藏 Audio 对象，负责所有场景 BGM
+      const sceneAudio = new Audio();
+      sceneAudio.preload = 'none';
+      sceneAudio.volume = 0.75;
+
+      let userInteracted = false;
+      let currentScene = null;
+
+      function enableAudioOnce() {
+        userInteracted = true;
+        document.removeEventListener('click', enableAudioOnce);
+        document.removeEventListener('keydown', enableAudioOnce);
+      }
+
+      // 第一次点击 / 按键后，浏览器才允许播放
+      document.addEventListener('click', enableAudioOnce);
+      document.addEventListener('keydown', enableAudioOnce);
+
+      function playForScene(scene) {
+        if (!userInteracted) return;
+        const src = scene.getAttribute('data-scene-bgm');
+        if (!src) return;
+
+        // 如果已经是当前场景并且在播，就不重复
+        if (scene === currentScene && !sceneAudio.paused) return;
+
+        const absoluteSrc = new URL(src, window.location.href).href;
+        if (sceneAudio.src !== absoluteSrc) {
+          sceneAudio.src = absoluteSrc;
+        }
+
+        sceneAudio.play().then(() => {
+          currentScene = scene;
+        }).catch(() => {
+          // 被浏览器拦截就悄悄失败，不报错
+        });
+      }
+
+      function handleSceneLeave(scene) {
+        if (scene === currentScene) {
+          sceneAudio.pause();
+          currentScene = null;
+        }
+      }
+
+      if (!('IntersectionObserver' in window)) {
+        // 太老的浏览器就不做自动播放了
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const scene = entry.target;
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+              // 这个场景在视口里占比超过 60%
+              playForScene(scene);
+            } else {
+              handleSceneLeave(scene);
+            }
+          });
+        },
+        {
+          threshold: [0.3, 0.6],
+        }
+      );
+
+      scenes.forEach((scene) => observer.observe(scene));
+    })();
+  </script>
 </body>
 </html>
