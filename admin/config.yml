@@ -16,3 +16,16 @@ collections:
       - { label: "Publish Date", name: "date", widget: "datetime" }
       - { label: "Tags", name: "tags", widget: "list", default: ["blog"] }
       - { label: "Body", name: "body", widget: "markdown" }
+      
+  - name: "fiction"          # 这个是文件夹名字，和 fiction/ 目录对应
+    label: "Fiction"         # 后台左边看到的名字，可以改成 “小说”
+    folder: "fiction"        # md 文件所在目录：/fiction
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "发布日期", name: "date", widget: "datetime" }
+      - { label: "简介（选填）", name: "excerpt", widget: "text", required: false }
+      - { label: "封面图片（选填）", name: "cover", widget: "image", required: false }
+      - { label: "背景音乐（选填，mp3）", name: "audio", widget: "file", required: false }
+      - { label: "正文", name: "body", widget: "markdown" }
