@@ -100,11 +100,11 @@
     </header>
 
     {# 封面图片：如果 front matter 里有 cover_image，就显示你在 Admin 里选的那张 #}
-    {% if cover_image %}
-      <figure class="fiction-hero">
-        <img src="{{ cover_image }}" alt="{{ title }}">
-      </figure>
-    {% endif %}
+  {% if cover %}
+  <figure class="fiction-hero">
+    <img src="{{ cover }}" alt="{{ title }} 封面图">
+  </figure>
+{% endif %}
 
     <section class="fiction-body">
       {{ content | safe }}
