@@ -14,18 +14,24 @@ module.exports = function (eleventyConfig) {
     return d.toLocaleDateString("zh-CN");
   });
 
-  // Admin 后台、图片、音乐文件原样拷贝到 _site
+  // 把这些资源原样拷贝到 _site 下
   eleventyConfig.addPassthroughCopy("admin");
   eleventyConfig.addPassthroughCopy("images");
   eleventyConfig.addPassthroughCopy("audio");
+  eleventyConfig.addPassthroughCopy("js");   // ✅ 新增：让 js 目录也被拷贝
 
   // 小说集合：收集 ./fiction 目录下所有 md
   eleventyConfig.addCollection("fiction", function (collectionApi) {
     return collectionApi.getFilteredByGlob("./fiction/*.md");
   });
 
-  // ✅ 场景块 shortcode：{% scene "标题", "/images/xxx.jpg", "/audio/yyy.mp3" %} ... {% endscene %}
-  // 这里不再渲染 <audio> 播放器，而是给场景加 data-scene-bgm，交给全局 JS 自动播放
+  // ✅ 场景块 shortcode：
+  // 用法（以后想用的话）：
+  // {% scene "SCENE 01", "/images/novel/snow-road.jpg", "/audio/latashiya_sample_050919.mp3" %}
+  //   这里写这一场的正文……
+  // {% endscene %}
+  //
+  // 注意：这里不渲染 <audio>，只在 <section> 上挂 data-audio，交给前端 JS 自动播 BGM
   eleventyConfig.addPairedShortcode(
     "scene",
     function (content, title, imagePath, audioPath) {
@@ -34,7 +40,7 @@ module.exports = function (eleventyConfig) {
       const safeAudio = audioPath || "";
 
       const dataAttr = safeAudio
-        ? ` data-scene-bgm="${safeAudio}"`
+        ? ` data-audio="${safeAudio}"`
         : "";
 
       const imageHTML = safeImage
@@ -43,15 +49,15 @@ module.exports = function (eleventyConfig) {
            </div>`
         : "";
 
+      const labelHTML = safeTitle
+        ? `<div class="scene-label">${safeTitle}</div>`
+        : "";
+
       return `
-<section class="scene-block"${dataAttr}>
+<section class="story-scene"${dataAttr}>
   ${imageHTML}
   <div class="scene-text">
-    ${
-      safeTitle
-        ? `<div class="scene-tag">${safeTitle}</div>`
-        : ""
-    }
+    ${labelHTML}
     <div class="scene-body">
       ${content}
     </div>
