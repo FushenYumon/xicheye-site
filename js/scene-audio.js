@@ -1,85 +1,134 @@
 // js/scene-audio.js
-// 功能：
-//  - 找到所有 .story-scene 且带 data-audio 的元素
-//  - 当某个场景进入视口时，自动播放对应 BGM（循环）
-//  - 离开视口或页面切到后台时暂停
+// 使用方式：
+//  - 小说正文中有若干 <section class="story-scene" data-audio="/audio/xxx.mp3"> ... </section>
+//  - 页面顶部有一个同意卡片：#bgm-consent + #bgmConsentBtn
+// 流程：
+//  1. 用户点击「开启场景背景音乐」按钮 → 视为授权播放
+//  2. 脚本找到当前视口中最主要的 story-scene，开始播放对应 BGM（loop）
+//  3. 之后滚动到其他 story-scene，会自动切换到对应的 data-audio
+
 document.addEventListener("DOMContentLoaded", () => {
   const scenes = document.querySelectorAll(".story-scene[data-audio]");
-  if (!scenes.length) return;
+  const consentBox = document.getElementById("bgm-consent");
+  const consentBtn = document.getElementById("bgmConsentBtn");
 
-  // 只使用一个全局 Audio 实例
-  const bgm = new Audio();
-  bgm.loop = true;
+  if (!scenes.length || !consentBox || !consentBtn) return;
+
+  const audio = new Audio();
+  audio.loop = true;
+
+  let userEnabled = false; // 是否已经点过同意
   let currentSrc = null;
 
-  // 标记用户是否有过交互，避免部分浏览器拦截
-  let interacted = false;
-  const markInteracted = () => {
-    interacted = true;
-    window.removeEventListener("click", markInteracted);
-    window.removeEventListener("keydown", markInteracted);
-  };
-  window.addEventListener("click", markInteracted);
-  window.addEventListener("keydown", markInteracted);
+  // 找到当前视口中“最可见”的场景
+  function getBestSceneInView() {
+    let best = null;
+    let bestScore = 0;
+    const vh = window.innerHeight || document.documentElement.clientHeight;
 
-  const tryPlay = () => {
-    const p = bgm.play();
-    if (p && typeof p.catch === "function") {
-      p.catch(() => {
-        // 被浏览器静默拦截就算了，不弹错误
-      });
-    }
-  };
+    scenes.forEach((sec) => {
+      const rect = sec.getBoundingClientRect();
+      const visibleHeight =
+        Math.min(rect.bottom, vh) - Math.max(rect.top, 0);
+      if (visibleHeight <= 0) return;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      let best = null;
-      let bestRatio = 0;
-
-      entries.forEach((entry) => {
-        if (entry.intersectionRatio > bestRatio) {
-          best = entry;
-          bestRatio = entry.intersectionRatio;
-        }
-      });
-
-      if (!best) return;
-
-      if (best.isIntersecting) {
-        const src = best.target.getAttribute("data-audio");
-        if (src && src !== currentSrc) {
-          currentSrc = src;
-          bgm.src = src;
-
-          if (interacted) {
-            tryPlay();
-          } else {
-            // 有些浏览器把滚动也当作交互，可以先试一次
-            tryPlay();
-          }
-        }
-      } else {
-        // 当所有场景都不在视口内时，暂停
-        const anyVisible = Array.from(scenes).some((scene) => {
-          const rect = scene.getBoundingClientRect();
-          return rect.top < window.innerHeight && rect.bottom > 0;
-        });
-        if (!anyVisible) {
-          bgm.pause();
-        }
+      const score = visibleHeight * rect.width;
+      if (score > bestScore) {
+        bestScore = score;
+        best = sec;
       }
-    },
-    {
-      threshold: [0.4, 0.6, 0.8], // 至少有 40% 在视口里才算“进入”
-    }
-  );
+    });
 
-  scenes.forEach((scene) => observer.observe(scene));
+    return best;
+  }
 
-  // 标签页切到后台时暂停
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      bgm.pause();
-    }
+  // 根据当前视口播放合适场景的 BGM
+  function playSceneBgmForCurrentView() {
+    if (!userEnabled) return;
+
+    const target = getBestSceneInView() || scenes[0];
+    if (!target) return;
+
+    const src = target.getAttribute("data-audio");
+    if (!src || src === currentSrc) return;
+
+    currentSrc = src;
+    audio.src = src;
+    audio.currentTime = 0;
+    audio
+      .play()
+      .catch((err) => console.warn("无法播放场景 BGM:", err));
+  }
+
+  // 第一次点击按钮：授予播放权限 + 立即按当前视口播放
+  consentBtn.addEventListener("click", () => {
+    if (userEnabled) return; // 只处理第一次
+
+    userEnabled = true;
+    consentBox.classList.add("hidden");
+
+    // 关键：把第一次 audio.play() 放在点击回调里
+    const target = getBestSceneInView() || scenes[0];
+    if (!target) return;
+
+    const src = target.getAttribute("data-audio");
+    if (!src) return;
+
+    currentSrc = src;
+    audio.src = src;
+    audio.currentTime = 0;
+
+    audio
+      .play()
+      .then(() => {
+        // 播放成功后，开启滚动监听自动切换
+        setupObserver();
+      })
+      .catch((err) => {
+        console.warn("首次播放场景 BGM 失败:", err);
+      });
   });
+
+  // 使用 IntersectionObserver 监听后续滚动，自动切换场景
+  function setupObserver() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!userEnabled) return;
+
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          const sec = entry.target;
+          const src = sec.getAttribute("data-audio");
+          if (!src || src === currentSrc) return;
+
+          currentSrc = src;
+          audio.src = src;
+          audio.currentTime = 0;
+          audio
+            .play()
+            .catch((err) =>
+              console.warn("切换场景 BGM 失败:", err)
+            );
+        });
+      },
+      {
+        threshold: 0.6, // 至少 60% 在视口里算「当前场景」
+      }
+    );
+
+    scenes.forEach((sec) => observer.observe(sec));
+
+    // 标签页切后台时暂停，回来后继续
+    document.addEventListener("visibilitychange", () => {
+      if (!userEnabled) return;
+      if (document.hidden) {
+        audio.pause();
+      } else if (currentSrc) {
+        audio.play().catch(() => {});
+      }
+    });
+  }
+
+  // 如果用户一开始就已经滚到某个场景，再点按钮也会从当前场景开始播
 });
