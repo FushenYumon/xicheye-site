@@ -18,20 +18,14 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("admin");
   eleventyConfig.addPassthroughCopy("images");
   eleventyConfig.addPassthroughCopy("audio");
-  eleventyConfig.addPassthroughCopy("js");   // ✅ 新增：让 js 目录也被拷贝
+  eleventyConfig.addPassthroughCopy("js");
 
   // 小说集合：收集 ./fiction 目录下所有 md
   eleventyConfig.addCollection("fiction", function (collectionApi) {
     return collectionApi.getFilteredByGlob("./fiction/*.md");
   });
 
-  // ✅ 场景块 shortcode：
-  // 用法（以后想用的话）：
-  // {% scene "SCENE 01", "/images/novel/snow-road.jpg", "/audio/latashiya_sample_050919.mp3" %}
-  //   这里写这一场的正文……
-  // {% endscene %}
-  //
-  // 注意：这里不渲染 <audio>，只在 <section> 上挂 data-audio，交给前端 JS 自动播 BGM
+  // 场景块 shortcode：以后想用的话可以继续用 {% scene %}...{% endscene %}
   eleventyConfig.addPairedShortcode(
     "scene",
     function (content, title, imagePath, audioPath) {
@@ -73,5 +67,10 @@ module.exports = function (eleventyConfig) {
       includes: "_includes",
       output: "_site",  // 输出目录
     },
+    // 重要：让 html / md 都用 Nunjucks 模板引擎，这样下面的 {{ }} / {% %} 能正确解析
+    templateFormats: ["html", "njk", "md"],
+    htmlTemplateEngine: "njk",
+    markdownTemplateEngine: "njk",
+    dataTemplateEngine: "njk",
   };
 };
