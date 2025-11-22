@@ -14,20 +14,36 @@
       box-sizing: border-box;
     }
 
-   body {
-  margin: 0;
-  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC",
-    -apple-system, BlinkMacSystemFont, system-ui, "SF Pro Text", "Segoe UI",
-    sans-serif;
-  background:
-    /* 左上角一点淡紫光 */
-    radial-gradient(circle at 20% 0%, rgba(129, 140, 248, 0.24) 0, transparent 55%),
-    /* 右下角一点蓝青光，像远处路灯反光在雪上 */
-    radial-gradient(circle at 80% 100%, rgba(56, 189, 248, 0.18) 0, transparent 60%),
-    /* 整体的深夜底色 */
-    radial-gradient(circle at top, #111827 0, #020617 55%);
-  color: #f5f5f5;
-}
+    /* —— 通用背景：云光 + 夜色 —— */
+    body {
+      margin: 0;
+      font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC",
+        -apple-system, BlinkMacSystemFont, system-ui, "SF Pro Text", "Segoe UI",
+        sans-serif;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(129, 140, 248, 0.24) 0, transparent 55%),
+        radial-gradient(circle at 80% 100%, rgba(56, 189, 248, 0.18) 0, transparent 60%),
+        radial-gradient(circle at top, #111827 0, #020617 55%);
+      color: #f5f5f5;
+    }
+
+    /* —— 页面淡入动画 —— */
+    .page-fade {
+      animation: pageFadeIn 650ms ease-out both;
+    }
+
+    @keyframes pageFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+        filter: blur(2px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
 
     .fiction-page {
       min-height: 100vh;
@@ -62,8 +78,6 @@
       color: #9ca3af;
     }
 
-    /* 这里以后可以放 tagline 和 tag chips */
-
     .fiction-hero {
       margin: 26px 0 18px;
       border-radius: 18px;
@@ -77,12 +91,11 @@
       height: auto;
     }
 
-    /* —— 正文排版（三件套） —— */
+    /* —— 正文排版 —— */
 
     .fiction-body {
       margin-top: 24px;
       max-width: 720px;
-      /* 正文使用衬线体，优先中文宋体/明朝体 */
       font-family:
         "Songti SC",
         "STSong",
@@ -98,14 +111,13 @@
 
     .fiction-body p {
       margin: 0 0 1.2em;
-      text-indent: 2em; /* 首行缩进两个汉字 */
+      text-indent: 2em;
     }
 
     .fiction-body p:last-child {
       margin-bottom: 0;
     }
 
-    /* 让列表、引文之类的元素不要缩进 */
     .fiction-body ul,
     .fiction-body ol,
     .fiction-body blockquote {
@@ -116,9 +128,7 @@
 
     /* —— 场景块组件 —— */
 
-    /* ✅ 加上 .story-scene，让你手写的 section 也能用同一套样式 */
-    .scene-block,
-    .story-scene {
+    .scene-block {
       margin-top: 32px;
       margin-bottom: 32px;
       padding: 20px;
@@ -136,8 +146,7 @@
     }
 
     @media (max-width: 768px) {
-      .scene-block,
-      .story-scene {
+      .scene-block {
         grid-template-columns: minmax(0, 1fr);
       }
     }
@@ -157,9 +166,7 @@
       gap: 12px;
     }
 
-    /* ✅ 你的 HTML 里用的是 scene-label，这里和 scene-tag 共用样式 */
-    .scene-tag,
-    .scene-label {
+    .scene-tag {
       display: inline-flex;
       align-self: flex-start;
       padding: 4px 10px;
@@ -179,40 +186,14 @@
 
     .scene-body p {
       margin: 0 0 0.7em;
-      text-indent: 0; /* 场景内不要首行缩进，看起来更像旁白 */
+      text-indent: 0;
     }
 
     .scene-body p:last-child {
       margin-bottom: 0;
     }
 
-    .scene-audio {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(15, 23, 42, 0.9);
-    }
-
-    .scene-audio-label {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-bottom: 6px;
-    }
-
-    .scene-audio audio {
-      width: 100%;
-    }
-
-    /* ✅ 场景 BGM 提示文字 */
-    .audio-indicator {
-      margin-top: 8px;
-      font-size: 12px;
-      color: #94a3b8;
-      opacity: 0.9;
-      user-select: none;
-    }
-
-    /* 背景音乐块（整篇小说的 BGM） */
+    /* —— 整篇小说 BGM 块（可选，用于显示播放器的那种） —— */
 
     .fiction-audio {
       margin-top: 28px;
@@ -232,6 +213,31 @@
 
     audio {
       width: 100%;
+    }
+
+    /* —— 右下角的小音量开关 —— */
+
+    .bgm-toggle {
+      position: fixed;
+      right: 20px;
+      bottom: 24px;
+      z-index: 40;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+      background: rgba(15, 23, 42, 0.85);
+      color: #e5e7eb;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(10px);
+    }
+
+    .bgm-toggle[hidden] {
+      display: none;
     }
   </style>
 </head>
@@ -266,104 +272,90 @@
     {% endif %}
   </main>
 
-  <!-- ✅ 自动场景 BGM：滚到有 data-audio 的 story-scene 时淡入播放 -->
+  <!-- —— 场景自动 BGM 脚本 —— -->
   <script>
-  (() => {
-    const scenes = Array.from(document.querySelectorAll(".story-scene[data-audio]"));
-    if (!scenes.length) return;
+    (function () {
+      const sections = document.querySelectorAll('.scene-block[data-scene-bgm]');
+      if (!sections.length) return;
 
-    let userInteracted = false;
-    const hiddenAudio = new Audio();
-    hiddenAudio.preload = "auto";
-    hiddenAudio.loop = true;
-    hiddenAudio.volume = 0;
+      const audio = new Audio();
+      audio.loop = true;
+      let currentSrc = null;
+      let userEnabled = false;
 
-    const unlockOnce = () => {
-      userInteracted = true;
-      // 试着 play/pause 一次，帮助通过自动播放策略
-      hiddenAudio.play().then(() => hiddenAudio.pause()).catch(() => {});
-    };
-    ["click", "touchstart", "keydown"].forEach(ev =>
-      window.addEventListener(ev, unlockOnce, { once: true })
-    );
+      // 创建右下角按钮
+      const btn = document.createElement('button');
+      btn.className = 'bgm-toggle';
+      btn.textContent = '🔇 开启场景音乐';
+      document.body.appendChild(btn);
 
-    let fadeTimer = null;
-    function fadeTo(target, ms, after) {
-      if (fadeTimer) clearInterval(fadeTimer);
-      target = Math.max(0, Math.min(1, target));
-      const start = hiddenAudio.volume;
-      const delta = target - start;
-      const steps = Math.max(1, Math.floor(ms / 50));
-      let i = 0;
-      fadeTimer = setInterval(() => {
-        i++;
-        hiddenAudio.volume = start + delta * (i / steps);
-        if (i >= steps) {
-          clearInterval(fadeTimer);
-          fadeTimer = null;
-          if (after) after();
-        }
-      }, 50);
-    }
-
-    function setIndicator(el, text) {
-      const hint = el.querySelector(".audio-indicator");
-      if (hint) hint.textContent = text;
-    }
-
-    function switchTo(src) {
-      if (!userInteracted) return;
-      const current = hiddenAudio.currentSrc || hiddenAudio.src || "";
-      if (current.endsWith(src)) return; // 已经在播这首
-      fadeTo(0, 250, () => {
-        hiddenAudio.src = src;
-        hiddenAudio.currentTime = 0;
-        hiddenAudio.play().catch(() => {});
-        fadeTo(0.6, 400); // 目标音量，可以按喜好调整
-      });
-    }
-
-    const visibleRatio = new Map();
-    function updateCurrentScene() {
-      const candidates = scenes
-        .map(el => ({ el, r: visibleRatio.get(el) || 0 }))
-        .filter(x => x.r > 0.55)
-        .sort((a, b) => b.r - a.r);
-
-      if (!candidates.length) {
-        // 所有场景都离开视口，淡出
-        fadeTo(0, 400);
-        return;
+      function updateButton() {
+        btn.textContent = userEnabled ? '🔊 场景音乐已开' : '🔇 开启场景音乐';
       }
 
-      const el = candidates[0].el;
-      const src = el.dataset.audio;
-      if (!src) return;
-      setIndicator(
-        el,
-        userInteracted ? "♪ 正在播放" : "点击页面任意处开启声音"
-      );
-      switchTo(src);
-    }
+      btn.addEventListener('click', async () => {
+        userEnabled = !userEnabled;
+        updateButton();
 
-    const io = new IntersectionObserver(
-      entries => {
-        entries.forEach(e => {
-          visibleRatio.set(e.target, e.isIntersecting ? e.intersectionRatio : 0);
-          if (e.isIntersecting) {
-            setIndicator(
-              e.target,
-              userInteracted ? "♪ 正在播放" : "点击页面任意处开启声音"
-            );
-          }
+        if (!userEnabled) {
+          audio.pause();
+          return;
+        }
+
+        // 开启时，找一下当前视口中最中心的场景
+        const visible = Array.from(sections).filter((sec) => {
+          const rect = sec.getBoundingClientRect();
+          const vh = window.innerHeight || document.documentElement.clientHeight;
+          const visibleHeight = Math.min(rect.bottom, vh) - Math.max(rect.top, 0);
+          return visibleHeight > rect.height * 0.5;
         });
-        updateCurrentScene();
-      },
-      { threshold: [0, 0.25, 0.5, 0.75, 1] }
-    );
 
-    scenes.forEach(el => io.observe(el));
-  })();
+        if (visible.length) {
+          const sec = visible[0];
+          const src = sec.getAttribute('data-scene-bgm');
+          if (src && src !== currentSrc) {
+            currentSrc = src;
+            audio.src = src;
+          }
+          try {
+            await audio.play();
+          } catch (e) {
+            console.warn('无法播放 BGM：', e);
+          }
+        }
+      });
+
+      updateButton();
+
+      const observer = new IntersectionObserver(
+        async (entries) => {
+          if (!userEnabled) return;
+
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+
+            const sec = entry.target;
+            const src = sec.getAttribute('data-scene-bgm');
+            if (!src) continue;
+
+            if (src !== currentSrc) {
+              currentSrc = src;
+              audio.src = src;
+            }
+            try {
+              await audio.play();
+            } catch (e) {
+              console.warn('无法播放 BGM：', e);
+            }
+          }
+        },
+        {
+          threshold: 0.6,
+        }
+      );
+
+      sections.forEach((sec) => observer.observe(sec));
+    })();
   </script>
 </body>
 </html>
