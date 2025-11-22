@@ -25,11 +25,6 @@ module.exports = function (eleventyConfig) {
     return collectionApi.getFilteredByGlob("./fiction/*.md");
   });
 
-  // 博客集合：收集 ./blog/posts 目录下所有 md
-  eleventyConfig.addCollection("blog", function (collectionApi) {
-    return collectionApi.getFilteredByGlob("./blog/posts/*.md");
-  });
-
   // ✅ 场景块 shortcode：
   // 用法（以后想用的话）：
   // {% scene "SCENE 01", "/images/novel/snow-road.jpg", "/audio/latashiya_sample_050919.mp3" %}

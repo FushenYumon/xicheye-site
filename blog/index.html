@@ -1,6 +1,3 @@
----
-layout: null
----
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -84,19 +81,19 @@ layout: null
     <p class="page-subtitle">一些关于夏天、代码、小说与生活的长句子。</p>
 
     <section class="blog-list">
-      {# 遍历 Eleventy 的 blog 集合 #}
-      {% for post in collections.blog | reverse %}
-        <a class="blog-card" href="{{ post.url }}">
-          <p class="blog-meta">
-            {{ post.date | date("yyyy-MM-dd") }}
-          </p>
-          <h2 class="blog-title">{{ post.data.title }}</h2>
-          <p class="blog-excerpt">
-            {{ post.templateContent | striptags | truncate(80) }}
-          </p>
-        </a>
-      {% endfor %}
-    </section>
+  {% comment %} 遍历 Eleventy 的 blog 集合 {% endcomment %}
+  {% for post in collections.blog reversed %}
+    <a class="blog-card" href="{{ post.url }}">
+      <p class="blog-meta">
+        {{ post.date | date: "%Y-%m-%d" }}
+      </p>
+      <h2 class="blog-title">{{ post.data.title }}</h2>
+      <p class="blog-excerpt">
+        {{ post.templateContent | strip_html | truncate: 80 }}
+      </p>
+    </a>
+  {% endfor %}
+</section>
 
     <a href="/" class="back-home">← 回到首页</a>
   </main>
