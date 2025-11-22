@@ -92,7 +92,6 @@
     }
 
     /* —— 正文排版 —— */
-
     .fiction-body {
       margin-top: 24px;
       max-width: 720px;
@@ -126,9 +125,10 @@
       text-indent: 0;
     }
 
-    /* —— 场景块组件 —— */
+    /* —— 场景块组件（和 js/scene-audio.js 对应） —— */
 
-    .scene-block {
+    /* 整个场景区域：class="story-scene" data-audio="..." */
+    .story-scene {
       margin-top: 32px;
       margin-bottom: 32px;
       padding: 20px;
@@ -146,7 +146,7 @@
     }
 
     @media (max-width: 768px) {
-      .scene-block {
+      .story-scene {
         grid-template-columns: minmax(0, 1fr);
       }
     }
@@ -166,7 +166,7 @@
       gap: 12px;
     }
 
-    .scene-tag {
+    .scene-label {
       display: inline-flex;
       align-self: flex-start;
       padding: 4px 10px;
@@ -193,6 +193,13 @@
       margin-bottom: 0;
     }
 
+    .audio-indicator {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #a5b4fc;
+      opacity: 0.9;
+    }
+
     /* —— 整篇小说 BGM 块（可选，用于显示播放器的那种） —— */
 
     .fiction-audio {
@@ -213,31 +220,6 @@
 
     audio {
       width: 100%;
-    }
-
-    /* —— 右下角的小音量开关 —— */
-
-    .bgm-toggle {
-      position: fixed;
-      right: 20px;
-      bottom: 24px;
-      z-index: 40;
-      border: none;
-      border-radius: 999px;
-      padding: 8px 14px;
-      font-size: 13px;
-      background: rgba(15, 23, 42, 0.85);
-      color: #e5e7eb;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      backdrop-filter: blur(10px);
-    }
-
-    .bgm-toggle[hidden] {
-      display: none;
     }
   </style>
 </head>
@@ -272,90 +254,7 @@
     {% endif %}
   </main>
 
-  <!-- —— 场景自动 BGM 脚本 —— -->
-  <script>
-    (function () {
-      const sections = document.querySelectorAll('.scene-block[data-scene-bgm]');
-      if (!sections.length) return;
-
-      const audio = new Audio();
-      audio.loop = true;
-      let currentSrc = null;
-      let userEnabled = false;
-
-      // 创建右下角按钮
-      const btn = document.createElement('button');
-      btn.className = 'bgm-toggle';
-      btn.textContent = '🔇 开启场景音乐';
-      document.body.appendChild(btn);
-
-      function updateButton() {
-        btn.textContent = userEnabled ? '🔊 场景音乐已开' : '🔇 开启场景音乐';
-      }
-
-      btn.addEventListener('click', async () => {
-        userEnabled = !userEnabled;
-        updateButton();
-
-        if (!userEnabled) {
-          audio.pause();
-          return;
-        }
-
-        // 开启时，找一下当前视口中最中心的场景
-        const visible = Array.from(sections).filter((sec) => {
-          const rect = sec.getBoundingClientRect();
-          const vh = window.innerHeight || document.documentElement.clientHeight;
-          const visibleHeight = Math.min(rect.bottom, vh) - Math.max(rect.top, 0);
-          return visibleHeight > rect.height * 0.5;
-        });
-
-        if (visible.length) {
-          const sec = visible[0];
-          const src = sec.getAttribute('data-scene-bgm');
-          if (src && src !== currentSrc) {
-            currentSrc = src;
-            audio.src = src;
-          }
-          try {
-            await audio.play();
-          } catch (e) {
-            console.warn('无法播放 BGM：', e);
-          }
-        }
-      });
-
-      updateButton();
-
-      const observer = new IntersectionObserver(
-        async (entries) => {
-          if (!userEnabled) return;
-
-          for (const entry of entries) {
-            if (!entry.isIntersecting) continue;
-
-            const sec = entry.target;
-            const src = sec.getAttribute('data-scene-bgm');
-            if (!src) continue;
-
-            if (src !== currentSrc) {
-              currentSrc = src;
-              audio.src = src;
-            }
-            try {
-              await audio.play();
-            } catch (e) {
-              console.warn('无法播放 BGM：', e);
-            }
-          }
-        },
-        {
-          threshold: 0.6,
-        }
-      );
-
-      sections.forEach((sec) => observer.observe(sec));
-    })();
-  </script>
+  <!-- 加载自动场景 BGM 的脚本：匹配 .story-scene[data-audio] -->
+  <script src="/js/scene-audio.js"></script>
 </body>
 </html>
