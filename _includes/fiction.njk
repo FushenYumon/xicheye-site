@@ -4,48 +4,7 @@
   <meta charset="utf-8" />
   <title>{{ title }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-    /* —— 场景 BGM 同意卡片 —— */
-    .bgm-consent {
-      margin: 10px 0 24px;
-      padding: 14px 16px;
-      border-radius: 16px;
-      background: radial-gradient(circle at top left,
-        rgba(148, 163, 253, 0.18),
-        rgba(15, 23, 42, 0.96)
-      );
-      border: 1px solid rgba(129, 140, 248, 0.5);
-      max-width: 720px;
-      font-size: 14px;
-      color: #e5e7eb;
-    }
 
-    .bgm-consent-text {
-      margin: 0 0 10px;
-      line-height: 1.7;
-    }
-
-    .bgm-consent-btn {
-      border: none;
-      border-radius: 999px;
-      padding: 6px 14px;
-      font-size: 13px;
-      cursor: pointer;
-      background: rgba(129, 140, 248, 0.95);
-      color: #0b1020;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.8);
-    }
-
-    .bgm-consent-btn:hover {
-      background: rgba(99, 102, 241, 1);
-    }
-
-    .bgm-consent.hidden {
-      display: none;
-    }
   <style>
     :root {
       color-scheme: dark;
@@ -55,7 +14,6 @@
       box-sizing: border-box;
     }
 
-    /* —— 通用背景：云光 + 夜色 —— */
     body {
       margin: 0;
       font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC",
@@ -68,7 +26,6 @@
       color: #f5f5f5;
     }
 
-    /* —— 页面淡入动画 —— */
     .page-fade {
       animation: pageFadeIn 650ms ease-out both;
     }
@@ -132,7 +89,6 @@
       height: auto;
     }
 
-    /* —— 正文排版 —— */
     .fiction-body {
       margin-top: 24px;
       max-width: 720px;
@@ -166,12 +122,9 @@
       text-indent: 0;
     }
 
-    /* —— 场景块组件（和 js/scene-audio.js 对应） —— */
-
-    /* 整个场景区域：class="story-scene" data-audio="..." */
+    /* 场景块样式（图片 + 文本） */
     .story-scene {
-      margin-top: 32px;
-      margin-bottom: 32px;
+      margin: 40px 0;
       padding: 20px;
       border-radius: 20px;
       background: radial-gradient(
@@ -192,6 +145,19 @@
       }
     }
 
+    .scene-label {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: rgba(148, 163, 253, 0.18);
+      color: #c7d2fe;
+      margin-bottom: 12px;
+    }
+
     .scene-media img {
       width: 100%;
       height: 100%;
@@ -205,18 +171,6 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-    }
-
-    .scene-label {
-      display: inline-flex;
-      align-self: flex-start;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      background: rgba(148, 163, 253, 0.18);
-      color: #c7d2fe;
     }
 
     .scene-body {
@@ -235,32 +189,51 @@
     }
 
     .audio-indicator {
-      margin-top: 6px;
       font-size: 12px;
       color: #a5b4fc;
       opacity: 0.9;
     }
 
-    /* —— 整篇小说 BGM 块（可选，用于显示播放器的那种） —— */
-
-    .fiction-audio {
-      margin-top: 28px;
-      max-width: 720px;
-      padding: 14px 18px;
+    /* 顶部的「场景 BGM 同意卡片」 */
+    .bgm-consent {
+      margin: 10px 0 24px;
+      padding: 14px 16px;
       border-radius: 16px;
-      background: rgba(15, 23, 42, 0.9);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .fiction-audio-label {
+      max-width: 720px;
       font-size: 14px;
-      color: #cbd5f5;
+      color: #e5e7eb;
+      background:
+        radial-gradient(circle at top left, rgba(148, 163, 253, 0.18), rgba(15, 23, 42, 0.96));
+      border: 1px solid rgba(129, 140, 248, 0.5);
+      box-shadow: 0 18px 30px rgba(15, 23, 42, 0.85);
     }
 
-    audio {
-      width: 100%;
+    .bgm-consent-text {
+      margin: 0 0 10px;
+      line-height: 1.7;
+    }
+
+    .bgm-consent-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      background: rgba(129, 140, 248, 0.95);
+      color: #0b1020;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.8);
+    }
+
+    .bgm-consent-btn:hover {
+      background: rgba(99, 102, 241, 1);
+    }
+
+    .bgm-consent.hidden {
+      display: none;
     }
   </style>
 </head>
@@ -273,16 +246,6 @@
         {{ page.date | date("yyyy-MM-dd") }}
       </p>
     </header>
-    <!-- BGM 同意提示卡片 -->
-    <section id="bgm-consent" class="bgm-consent">
-      <p class="bgm-consent-text">
-        本篇故事的某些段落会配有背景音乐。<br>
-        点击下方按钮，同意在阅读过程中按场景自动播放 BGM。
-      </p>
-      <button id="bgmConsentBtn" class="bgm-consent-btn">
-        🎧 开启场景背景音乐
-      </button>
-    </section>
 
     {% if cover %}
     <figure class="fiction-hero">
@@ -290,22 +253,107 @@
     </figure>
     {% endif %}
 
+    <!-- 场景 BGM 同意卡片 -->
+    <section class="bgm-consent" id="bgm-consent">
+      <p class="bgm-consent-text">
+        本篇故事中的某些段落会配有背景音乐。<br />
+        点击下方按钮，即视为你同意在阅读过程中这些场景可自动播放 BGM。
+      </p>
+      <button type="button" class="bgm-consent-btn" id="bgm-consent-btn">
+        ✔ 开启场景背景音乐
+      </button>
+    </section>
+
+    <!-- 正文内容（含你的 story-scene 区块） -->
     <section class="fiction-body">
       {{ content | safe }}
     </section>
-
-    {% if audio %}
-    <section class="fiction-audio">
-      <div class="fiction-audio-label">背景音乐</div>
-      <audio controls preload="none">
-        <source src="{{ audio }}" type="audio/mpeg" />
-        你的浏览器不支持音频播放。
-      </audio>
-    </section>
-    {% endif %}
   </main>
 
-  <!-- 加载自动场景 BGM 的脚本：匹配 .story-scene[data-audio] -->
-  <script src="/js/scene-audio.js"></script>
+  <script>
+    (function () {
+      const scenes = document.querySelectorAll(".story-scene[data-audio]");
+      if (!scenes.length) return;
+
+      const audio = new Audio();
+      audio.loop = true;
+      let currentSrc = null;
+      let userAllowed = false;
+
+      const consentBox = document.getElementById("bgm-consent");
+      const consentBtn = document.getElementById("bgm-consent-btn");
+
+      function getMostVisibleScene() {
+        let best = null;
+        let bestRatio = 0;
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+
+        scenes.forEach((scene) => {
+          const rect = scene.getBoundingClientRect();
+          const visibleHeight = Math.min(rect.bottom, vh) - Math.max(rect.top, 0);
+          const ratio = visibleHeight / rect.height;
+          if (ratio > bestRatio) {
+            bestRatio = ratio;
+            best = scene;
+          }
+        });
+
+        return bestRatio >= 0.6 ? best : null;
+      }
+
+      async function playForScene(scene) {
+        if (!scene) return;
+        const src = scene.getAttribute("data-audio");
+        if (!src) return;
+        if (src === currentSrc && !audio.paused) return;
+
+        currentSrc = src;
+        audio.src = src;
+        try {
+          await audio.play();
+        } catch (e) {
+          console.warn("无法播放 BGM：", e);
+        }
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (!userAllowed) return;
+
+          const scene = getMostVisibleScene();
+          if (scene) {
+            playForScene(scene);
+          } else {
+            audio.pause();
+          }
+        },
+        {
+          threshold: [0.3, 0.6, 0.9],
+        }
+      );
+
+      scenes.forEach((scene) => observer.observe(scene));
+
+      if (consentBtn) {
+        consentBtn.addEventListener("click", () => {
+          userAllowed = true;
+          if (consentBox) {
+            consentBox.classList.add("hidden");
+          }
+
+          const scene = getMostVisibleScene();
+          if (scene) {
+            playForScene(scene);
+          }
+        });
+      }
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          audio.pause();
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
