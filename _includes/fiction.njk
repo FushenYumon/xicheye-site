@@ -4,7 +4,48 @@
   <meta charset="utf-8" />
   <title>{{ title }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+    /* —— 场景 BGM 同意卡片 —— */
+    .bgm-consent {
+      margin: 10px 0 24px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: radial-gradient(circle at top left,
+        rgba(148, 163, 253, 0.18),
+        rgba(15, 23, 42, 0.96)
+      );
+      border: 1px solid rgba(129, 140, 248, 0.5);
+      max-width: 720px;
+      font-size: 14px;
+      color: #e5e7eb;
+    }
 
+    .bgm-consent-text {
+      margin: 0 0 10px;
+      line-height: 1.7;
+    }
+
+    .bgm-consent-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      background: rgba(129, 140, 248, 0.95);
+      color: #0b1020;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.8);
+    }
+
+    .bgm-consent-btn:hover {
+      background: rgba(99, 102, 241, 1);
+    }
+
+    .bgm-consent.hidden {
+      display: none;
+    }
   <style>
     :root {
       color-scheme: dark;
@@ -232,6 +273,16 @@
         {{ page.date | date("yyyy-MM-dd") }}
       </p>
     </header>
+    <!-- BGM 同意提示卡片 -->
+    <section id="bgm-consent" class="bgm-consent">
+      <p class="bgm-consent-text">
+        本篇故事的某些段落会配有背景音乐。<br>
+        点击下方按钮，同意在阅读过程中按场景自动播放 BGM。
+      </p>
+      <button id="bgmConsentBtn" class="bgm-consent-btn">
+        🎧 开启场景背景音乐
+      </button>
+    </section>
 
     {% if cover %}
     <figure class="fiction-hero">
